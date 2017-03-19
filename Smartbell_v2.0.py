@@ -9,9 +9,9 @@ import json
 #Object handling JSON input data
 class jsonData(object):
     #Descriptor Definitions:
-    #Instantiation
+    #Instantiated as JSON list or empty
     def __init__(self, *args):
-        if (len(args) > 0):
+        if args:
             self.data = json.loads(','.join(x for x in args))
         else:
             self.data = []
@@ -34,12 +34,12 @@ class jsonData(object):
     #dump utility; printing:
     #Prints all data
     def dump(self, *args):
-        for x in self.data:
-            print(x)
-    #Prints all instances of key
-    def dump(self, key):
-        for x in self.data:
-            print(x[key])
+        if args:
+            for x in self.data:
+                print(x[args[0]])    
+        else:
+            for x in self.data:
+                print(x)
 
     #search utility; basic searching:
     #Returns list of instances from key and query
@@ -61,5 +61,5 @@ print(myObject.search("name", "Carl"))
 #Creates new empty object
 newObject = jsonData()
 
-newObject.dump()
+myObject.dump()
 
