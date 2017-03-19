@@ -108,5 +108,6 @@ g.data = f.filter(True, name="Carl", age=28)
 print("Results where 'name'='Carl' and 'age'=28:")
 g.printer()
 
-#Search utility 
+#Search utility
+print("Results where 'age' = 34")
 print(f.search("age", 34))
