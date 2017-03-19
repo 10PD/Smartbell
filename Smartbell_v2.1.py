@@ -57,13 +57,20 @@ class jsonData(object):
     #filter utility; essentially layered basic searching:
     #Takes keyvalue pair and optional bool arg for OR / AND filter (Default OR)
     #Returns list of results
-    def filter(self, **qargs, layer=false):
+    def filter(self, layer=False, **qargs):
         resultList = []
+        filterCheck = 0
         if qargs:
             for x in self.data:
                 for key, value in qargs.items():
-                    if (x[str(key)] == value):
-                        resultList.append(x)
+                    if layer:
+                        if (x[str(key)] == value):
+                            filterCheck += 1
+                        if (filterCheck == len(qargs)):
+                            resultList.append(x)
+                    else:
+                        if (x[str(key)] == value):
+                            resultList.append(x)
         return resultList
     #Returns list of results of keyvalue pairs
     
@@ -71,9 +78,14 @@ class jsonData(object):
 #Example data    
 Databae_data = '[{"name":"Carl","age":34,"city":"Ipswich"},{"name":"Carl","age":28,"city":"Ipswich"},{"name":"Kevin","age":28,"city":"Ipswich"},{"name":"Owen","age":28,"city":"Ipswich"},{"name":"Ryan","age":28,"city":"Ipswich"}]'
 
-#Examples of using and handling:
+#EXAMPLES of using and handling:
 #Creates object holding example JSON data
 myObject = jsonData(Databae_data)
-#Search
-print(myObject.search("age",34))
-
+#Searches and prints the returned list
+print("Printing result of search for the 'name' of 'Carl': \n")
+print(myObject.search("name","Carl"))
+#Creates new object
+newObj = jsonData()
+#Sets newObj with result list
+#'True' bool given to make filter require all conditions to be met
+newObj = myObject.filter(True, name="Carl", age=28)
