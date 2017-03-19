@@ -6,35 +6,53 @@
 #Imported libraries
 import json
 
-#Object handling JSON input data
-class jsonData(object):
+#Descriptor object handling JSON data
+#Currently only standard descriptors
+#Will be updated to fit our ADT needs
+class jsonDesc(object):
     #Descriptor Definitions:
-    #Instantiated as JSON list or empty
-    def __init__(self, *args):
-        try:
-            self.data = json.loads(','.join(str(x) for x in args))
-        except:
-            self.data = []            
+    #Instantiated as list
+    def __init__(self):
+        self.values = []    
     #Sets data to input data
     def __set__(self, obj, setData):
-        print("Called")
-        try:
-            self.data = json.loads(json.dumps(setData))
-        except:
-            print("Object takes JSON format ONLY.")
+        self.values = setData
     #Gets data from class
     def __get__(self, instance, owner):
-        return self.data
+        return self.values
     #Deletes current data
     def __del__(self):
-        del self.data
+        del self.values
 
-    #dump utility; printing:
-    def dump(self, *args):
-        #Prints all items of key
+    
+#Main object, instantiates 'data' from jsonDesc
+class jsonHolder(object):
+    #Defined constructor
+    #Takes 0 OR 1 args (More args ignored but no exception thrown)
+    #Inits data as empty OR parses JSON
+    def __init__(self, *args):
+        self.data = jsonDesc()
+        if args:
+            try:
+                self.data = json.loads(args[0])
+            except json.decoder.JSONDecodeError:
+                print("Invalid JSON argument passed! Initialised as empty.")
+
+    #Getters / Setters
+    def setJson(self, setData):
+        self.data = json.loads(setData)
+    def getJson(self):
+        return json.dumps(self.data)
+    
+    #print utility; printing:
+    def printer(self, *args):
+        #Prints all values of stored key
         if args:
             for x in self.data:
-                print(x[args[0]])
+                try:
+                    print(x[args[0]])
+                except KeyError:
+                    print("Key not found in this item")
         #Prints all items
         else:
             for x in self.data:
@@ -67,25 +85,28 @@ class jsonData(object):
                         if (x[str(key)] == value):
                             resultList.append(x)
         return resultList
-    #Returns list of results of keyvalue pairs
-
-class Foo():
-    Databae_data = '[{"name":"Carl","age":34,"city":"Ipswich"},{"name":"Carl","age":28,"city":"Ipswich"},{"name":"Kevin","age":28,"city":"Ipswich"},{"name":"Owen","age":28,"city":"Ipswich"},{"name":"Ryan","age":28,"city":"Ipswich"}]'
-    bar = jsonData(Databae_data)
-
+    
 #Example data    
 Databae_data = '[{"name":"Carl","age":34,"city":"Ipswich"},{"name":"Carl","age":28,"city":"Ipswich"},{"name":"Kevin","age":28,"city":"Ipswich"},{"name":"Owen","age":28,"city":"Ipswich"},{"name":"Ryan","age":28,"city":"Ipswich"}]'
 
 #EXAMPLES of using and handling:
-#Creates object holding example JSON data
-myObject = jsonData(Databae_data)
-#Searches and prints the returned list
-#print("Printing result of search for the 'name' of 'Carl':")
-#print(myObject.search("name","Carl"))
-#Creates new object
-f = Foo()
-f.data = "New"
-#Sets newObj with result list
-#'True' bool given to make filter require all conditions to be met
-#newObj.data = myObject.filter(True, name="Carl", age=28)
+#Creates new object and sets JSON value
+f = jsonHolder()
+f.setJson(Databae_data)
+#Variation of object creation / population
+g = jsonHolder(Databae_data)
+#Accessing data by index and key
+print("Accessing data by index 0 and key 'name': ")
+print(f.data[0]["name"])
 
+#Utility function examples:
+#Assigns g data to f's filter returned results
+#Takes 'True' for AND filter, plus query arguments
+g.data = f.filter(True, name="Carl", age=28)
+
+#Printer utility showing results
+print("Results where 'name'='Carl' and 'age'=28:")
+g.printer()
+
+#Search utility 
+print(f.search("age", 34))
