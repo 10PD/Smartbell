@@ -11,28 +11,23 @@ class jsonData(object):
     #Descriptor Definitions:
     #Instantiated as JSON list or empty
     def __init__(self, *args):
-        if args:
+        try:
             self.data = json.loads(','.join(str(x) for x in args))
-        else:
-            self.data = []
-    #Sets data to input list data
-    def __set__(self, dataList):
-        self.data = dataList
-    #Gets data from class as list
-    def __get__(self):
+        except:
+            self.data = []            
+    #Sets data to input data
+    def __set__(self, obj, setData):
+        print("Called")
+        try:
+            self.data = json.loads(json.dumps(setData))
+        except:
+            print("Object takes JSON format ONLY.")
+    #Gets data from class
+    def __get__(self, instance, owner):
         return self.data
     #Deletes current data
     def __del__(self):
         del self.data
-
-    #Getters / Setters:
-    #Gets all values of a key
-    def get_byKey(self, key):
-        return ','.join([x[key] for x in self.data])
-    #Sets data in JSON format; takes list
-    #WILL NEED ERROR CHECKING
-    def set_listToJson(self, dataList):
-        self.data = json.loads(json.dumps(dataList))
 
     #dump utility; printing:
     def dump(self, *args):
@@ -73,7 +68,10 @@ class jsonData(object):
                             resultList.append(x)
         return resultList
     #Returns list of results of keyvalue pairs
-    
+
+class Foo():
+    Databae_data = '[{"name":"Carl","age":34,"city":"Ipswich"},{"name":"Carl","age":28,"city":"Ipswich"},{"name":"Kevin","age":28,"city":"Ipswich"},{"name":"Owen","age":28,"city":"Ipswich"},{"name":"Ryan","age":28,"city":"Ipswich"}]'
+    bar = jsonData(Databae_data)
 
 #Example data    
 Databae_data = '[{"name":"Carl","age":34,"city":"Ipswich"},{"name":"Carl","age":28,"city":"Ipswich"},{"name":"Kevin","age":28,"city":"Ipswich"},{"name":"Owen","age":28,"city":"Ipswich"},{"name":"Ryan","age":28,"city":"Ipswich"}]'
@@ -82,10 +80,12 @@ Databae_data = '[{"name":"Carl","age":34,"city":"Ipswich"},{"name":"Carl","age":
 #Creates object holding example JSON data
 myObject = jsonData(Databae_data)
 #Searches and prints the returned list
-print("Printing result of search for the 'name' of 'Carl': \n")
-print(myObject.search("name","Carl"))
+#print("Printing result of search for the 'name' of 'Carl':")
+#print(myObject.search("name","Carl"))
 #Creates new object
-newObj = jsonData()
+f = Foo()
+f.data = "New"
 #Sets newObj with result list
 #'True' bool given to make filter require all conditions to be met
-newObj = myObject.filter(True, name="Carl", age=28)
+#newObj.data = myObject.filter(True, name="Carl", age=28)
+
