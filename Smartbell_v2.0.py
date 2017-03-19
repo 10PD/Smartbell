@@ -32,22 +32,24 @@ class jsonData(object):
   
 
     #dump utility; printing:
-    #Prints all data
     def dump(self, *args):
+        #Prints all items of key
         if args:
             for x in self.data:
-                print(x[args[0]])    
+                print(x[args[0]])
+        #Prints all items
         else:
             for x in self.data:
                 print(x)
 
     #search utility; basic searching:
-    #Returns list of instances from key and query
-    def search(self, key, query):
+    #Returns list of instances by key or query
+    def search(self, *args):
         resultList = []
-        for x in self.data:
-            if (x[key] == query):
-                resultList.append(x)
+        if args:
+            for x in self.data:
+                if (x[args[0]] == args[1]):
+                    resultList.append(x)
         return resultList
 
 #Example data    
@@ -57,9 +59,9 @@ Databae_data = '[{"name":"Carl","age":28,"city":"Ipswich"},{"name":"Kevin","age"
 #Creates object holding example JSON data
 myObject = jsonData(Databae_data)
 #Search
-print(myObject.search("name", "Carl"))
+print(myObject.search("name","Carl"))
 #Creates new empty object
 newObject = jsonData()
 
-myObject.dump()
+#myObject.dump("name")
 
