@@ -8,13 +8,11 @@ import datetime, time
 #Descriptor object handling JSON data
 class jsonDesc(object):
 
-    defaultString = '[{"dumbbell_id":"serialID","user_id":"TBI","date":1490320045000,"workout":"TBI","reps":404,"form":404}]'
-
+    defaultString = '[{"dumbbell_id":"serialID","user_id":"TBI","date":0,"workout":"TBI","reps":404,"form":404}]'
     #Takes initialising string and optional error message
     #Returns self.data as JSON
     def setJson(self, string,errorMsg="Unable to parse JSON. Initialised as default."):
         try:
-            string = str(string).strip("'<>() ").replace('\'', '\"')
             self.data = json.loads(string)
         except json.decoder.JSONDecodeError:
             print(errorMsg)
@@ -27,16 +25,18 @@ class jsonDesc(object):
             self.data = json.loads(self.defaultString)
         #1 arg, takes string to parse to JSON
         elif (len(args) == 1):
-            self.data = self.setJson(args[0])
+            self.setJson(args[0])
         #2+ args, tries to join and parse into JSON
         else:
-            self.data = setJson(','.join(x for x in args),"Unable to parse multiple args. Initialised as default.")
+            tmp = ','.join(x for x in args)
+            self.setJson(tmp,"Unable to parse multiple args. Initialised as default.")
                 
     #Sets data to input data, equals overload
     def __set__(self, instance, data):
         setJson(self, data)
     #Gets data from class
     def __get__(self, instance, owner):
+        #print(self.data)
         return self.data
 
 #Object containing JSON to be sent to server
@@ -72,5 +72,10 @@ class jsonOutput(object):
     data.setJson(formattedData)
 
 #Creates output object for server    
-z = jsonOutput()
+#z = jsonOutput()
+q = jsonDesc('[{"test":1}','{"test":2}','{"test":3}]')
 
+print(q.data[0]["test"])
+#q.setJson()
+#print(q.data[2]["test"])
+#print(z.data[0]["date"])
