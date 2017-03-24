@@ -72,10 +72,5 @@ class jsonOutput(object):
     data.setJson(formattedData)
 
 #Creates output object for server    
-#z = jsonOutput()
-q = jsonDesc('[{"test":1}','{"test":2}','{"test":3}]')
+z = jsonOutput()
 
-print(q.data[0]["test"])
-#q.setJson()
-#print(q.data[2]["test"])
-#print(z.data[0]["date"])
