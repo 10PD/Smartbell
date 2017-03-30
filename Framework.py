@@ -68,8 +68,7 @@ class jsonOutput(object):
     #Horrible concatenation of the JSON object
     #TBI will be updated with features when possible
     formattedData = '[{"dumbbell_id":"' + getSerial() + '","user_id":"' + 'TBI' + '",\"date\":' + str(getDate()) + ',\"workout\":\"' + 'TBI' + '\",\"reps\":' + '404' + ',\"form\":' + '404' + '}]'
-    data = jsonDesc()
-    data.setJson(formattedData)
+    data = jsonDesc(formattedData)
 
 #Creates output object for server    
 z = jsonOutput()
