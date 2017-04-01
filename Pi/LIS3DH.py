@@ -12,8 +12,8 @@
 #  - https://github.com/adafruit/Adafruit_LIS3DH
 #  - https://www.adafruit.com/datasheets/LIS3DH.pdf
 
-from Adafruit_GPIO import I2C
-import Adafruit_GPIO.GPIO as GPIO        #needed for Hardware interrupt
+import I2C
+import RPi.GPIO as GPIO        #needed for Hardware interrupt
 
 class LIS3DH(object):
 
