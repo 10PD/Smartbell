@@ -261,7 +261,7 @@ class LIS3DH(object):
    def dumpRegisters(self):
       for x in range(0x0, 0x3D):
          read = self.i2c.readU8(x)
-         print(("%X: %s") % (x, bin(read)))
+         print ("%X: %s") % (x, bin(read))
 
    def debug(self, message):
       if not self.isDebug: return
