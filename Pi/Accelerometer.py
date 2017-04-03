@@ -12,6 +12,7 @@ zList = []
 i = 0
 
 def avg(dataList):
+    temp = 0
     for data in dataList:
         temp += data
     temp = temp / dataList.length()
@@ -31,7 +32,7 @@ while i < 100:
     yList.append(y)
     zList.append(z)
     #Is this the hz we want??
-    i++
+    i += 1
     sleep(0.1)
 
 print(("\r\nAVERAGES: X: %.6f\tY: %.6f\tZ: %.6f") % ( avg(xList) , avg(yList) , avg(zList) ))
