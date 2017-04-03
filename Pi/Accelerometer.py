@@ -22,9 +22,6 @@ while True:
     
 #raw values
     print(("\rX: %.6f\tY: %.6f\tZ: %.6f") % (x_acc,y_acc,z_acc))
-    
-    xList.append(x)
-    yList.append(y)
-    zList.append(z)
+
     #Is this the hz we want??
     sleep(0.1)
