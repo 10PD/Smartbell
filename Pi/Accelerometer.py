@@ -1,8 +1,8 @@
 #Program to get Lisa18's data and interpreit
 #AVERAGES:
-xAvg: -0.152029
-yAvg: 0.291956
-zAvg: 0.960752
+xAvg = -0.152029
+yAvg = 0.291956
+zAvg = 0.960752
 import LIS3DH as Lisa
 from time import sleep
 
