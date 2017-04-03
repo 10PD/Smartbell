@@ -15,7 +15,7 @@ def avg(dataList):
     temp = 0
     for data in dataList:
         temp += data
-    temp = temp / dataList.length()
+    temp = temp / len(dataList)
     return temp
 
 print ("Starting stream")
