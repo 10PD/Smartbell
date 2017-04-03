@@ -14,18 +14,22 @@ def initLisa(add, bus):
     except IOError:
         print("Failed to initialise Lisa%x" % add)
     
+#Tries to pull data from Lisa
+def testLisa(Lisa):
+    print ("Starting stream")
+    while True:
+        
+        x = Lisa.getX()
+        y = Lisa.getY()
+        z = Lisa.getZ()
+
+    #raw values
+        print(("\rX: %.6f\tY: %.6f\tZ: %.6f") % (x,y,z))
+        #Is this the hz we want??
+        sleep(0.1)
 
 
 Lisa18 = initLisa(0x18, -1)
 Lisa19 = initLisa(0x19, -0)
 
-print ("Starting stream")
-while True:
-       
-    x = Lisa18.getX()
-    y = Lisa18.getY()
-    z = Lisa18.getZ()
-
-#raw values
-    print(("\rX: %.6f\tY: %.6f\tZ: %.6f") % (x,y,z))
-    sleep(0.1)
+testLisa(input("Test Lisa18 or Lisa19?\n"))
