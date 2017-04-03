@@ -14,8 +14,8 @@ def clickcallback(channel):
 
 if __name__ == '__main__':
     sensor = Lisa.LIS3DH(debug=True)
-    sensor.setRange(LIS3DH.RANGE_2G)
-    sensor.setClick(LIS3DH.CLK_SINGLE,80,mycallback=clickcallback)
+    sensor.setRange(Lisa.LIS3DH.RANGE_2G)
+   #sensor.setClick(LIS3DH.CLK_SINGLE,80,mycallback=clickcallback)
 
     print ("Starting stream")
     while True:
