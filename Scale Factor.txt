@@ -1,0 +1,18 @@
+Hi,
+
+it´s quite easy to calculate the acceleration for every axis. Put your accelerometer flat on the table.
+It will output the bias values for X- and Y-axis (acc_x_bias). If you are using a 3-axis accelerometer, then the Z-axis will output the value for -1g.
+
+Now rotate the a accelerometer 90 degrees X-axis up. You get the +1g value (acc_x_1g) for the X-axis. Do this for every axis.
+
+With these calculations you get the acceleration in g and finally the angle in degrees.
+
+sf_x = 9.80666 / (acc_x_1g - acc_x_bias); // Calculate the scale factor for X-axis
+acc_x = sf_x * (adc_x_reading - acc_x_bias); // Calculate the actual acceleration of X-axis
+angle_x = asin(acc_x / 9.80666) * 180.0 / PI;
+
+Be aware that a calibration routine for high performance devices are much more complex, but for simple applications this should fit.
+
+Regards 
+
+Udo

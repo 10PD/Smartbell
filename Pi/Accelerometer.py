@@ -1,5 +1,5 @@
 #Program to get Lisa18's data and interpreit
-#AVERAGES:
+#AVERAGES (from flat):
 xAvg = -0.152029
 yAvg = 0.291956
 zAvg = 0.960752

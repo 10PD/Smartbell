@@ -1,5 +1,10 @@
 #Smartbell Framework
-#A practice framework for talking to the web server
+#Provides a discreet datatype, 'jsonDesc(*args)',   
+#takes string and parses to JSON, else declares as default.
+
+#*Contains 'jsonOutput' object,
+#will be used to build the packets sent to the server.
+
 
 #Imported libraries
 import json
