@@ -20,4 +20,4 @@ Pi/Average.py (py2.7):
 
 Pi/testLIS3DH.py (py2.7):
 *Came with the chip's python library, and the inspiration for many of the programs.
-*Don't change me!
+*Don't change me! 

@@ -70,7 +70,9 @@ gyro_total_y = (last_y) - gyro_offset_y
 
 print "{0:.4f} {1:.2f} {2:.2f} {3:.2f} {4:.2f} {5:.2f} {6:.2f}".format( time.time() - now, (last_x), gyro_total_x, (last_x), (last_y), gyro_total_y, (last_y))
 
+#3.0 / time_diff = samples
 for i in range(0, int(3.0 / time_diff)):
+    #Really weird line but OK
     time.sleep(time_diff - 0.005) 
     
     (gyro_scaled_x, gyro_scaled_y, gyro_scaled_z, accel_scaled_x, accel_scaled_y, accel_scaled_z) = read_all()
