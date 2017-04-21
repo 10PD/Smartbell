@@ -69,11 +69,10 @@ gyro_offset_y = gyro_scaled_y
 gyro_total_x = (last_x) - gyro_offset_x
 gyro_total_y = (last_y) - gyro_offset_y
 
-print "{0:.4f} {1:.2f} {2:.2f} {3:.2f} {4:.2f} {5:.2f} {6:.2f}".format( time.time() - now, (last_x), gyro_total_x, (last_x), (last_y), gyro_total_y, (last_y))
+print ("{0:.4f} {1:.2f} {2:.2f} {3:.2f} {4:.2f} {5:.2f} {6:.2f}").format( time.time() - now, (last_x), gyro_total_x, (last_x), (last_y), gyro_total_y, (last_y))
 
-
+output = list()
 #1.5 / time_diff = samples
-int repCalc = 0
 for i in range(0, int(6 / time_diff)):
     time.sleep(time_diff - 0.005) 
     
@@ -93,11 +92,11 @@ for i in range(0, int(6 / time_diff)):
 
     last_x = K * (last_x + gyro_x_delta) + (K1 * rotation_x)
     last_y = K * (last_y + gyro_y_delta) + (K1 * rotation_y)
-    repCalc = repCalc + last_x + last_y)
-    print "{0:.4f} {1:.2f} {2:.2f} {3:.2f} {4:.2f} {5:.2f} {6:.2f}".format( time.time() - now, (rotation_x), (gyro_total_x), (last_x), (rotation_y), (gyro_total_y), (last_y))
-    with open("output.txt", "a") as myfile:
-    myfile.write("appended text")
+    output.append( "{0:.4f} {1:.2f} {2:.2f} {3:.2f} {4:.2f} {5:.2f} {6:.2f}".format( time.time() - now, (rotation_x), (gyro_total_x), (last_x), (rotation_y), (gyro_total_y), (last_y)) )
 
+for x in output:
+    with open("output.txt", "a") as myfile:
+        myfile.write()
 
 
     
