@@ -81,8 +81,7 @@ time_diff = 0.01
 
 while True:
     #Lists holding filtered values over time
-    rep_x = list()
-    rep_y = list()
+    total = 0
     #int / time_diff = samples
     for i in range(0, int(3 / time_diff)):
         time.sleep(time_diff - 0.005) 
@@ -101,26 +100,22 @@ while True:
         rotation_x = get_x_rotation(accel_scaled_x, accel_scaled_y, accel_scaled_z)
         rotation_y = get_y_rotation(accel_scaled_x, accel_scaled_y, accel_scaled_z)
 
+        #temp vars for rep calc
+        temp_x = last_x
+        temp_y = last_y
+        
         last_x = K * (last_x + gyro_x_delta) + (K1 * rotation_x)
         last_y = K * (last_y + gyro_y_delta) + (K1 * rotation_y)
-        
-        rep_x.append(last_x)
-        rep_y.append(last_y)
 
-    #Calculates whether still
-    total = 0
-    for q in range(0,len(rep_x)):
-        try:
-            #May want one axis to be more valuable?
-            #i.e. weight down x movements if y is more important
-            total += (rep_x[q+1] - rep_x[q]) + (rep_y[q+1] - rep_y[q])
-        except IndexError:
-            total += 0
+        #May want one axis to be more valuable?
+        #i.e. weight down x movements if y is more important
+        total += (last_x - temp_x) + (last_y - temp_y)
+        print(total)
 
-    print(total)
     #CHANGEME:
-    #Needs testing to determine apropriate value
+    #Needs testing to determine apropriate value!
     if total > 10:
+        #Will be updated to BCM output
         print("Rep!")
     
         
