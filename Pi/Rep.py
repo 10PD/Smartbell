@@ -4,6 +4,11 @@
 import smbus
 import math
 import time
+import RPi.GPIO as GPIO
+
+#Pinout settings
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
 
 # Power management registers
 power_mgmt_1 = 0x6b
@@ -46,6 +51,10 @@ def get_x_rotation(x,y,z):
     radians = math.atan2(y, dist(x,z))
     return math.degrees(radians)
 
+def setPin(pin, setBool):
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, setBool)
+
 #Sets the plane of orientation
 def initPlane():
     (gyro_scaled_x, gyro_scaled_y, gyro_scaled_z, accel_scaled_x, accel_scaled_y, accel_scaled_z) = read_all()
@@ -71,7 +80,8 @@ bus = smbus.SMBus(1)  # or bus = smbus.SMBus(1) for Revision 2 boards
 # Now wake the 6050 up as it starts in sleep mode
 bus.write_byte_data(address, power_mgmt_1, 0)
 
-now = time.time()
+#now = time.time()
+
 K = 0.98
 K1 = 1 - K
 time_diff = 0.01
@@ -80,7 +90,6 @@ time_diff = 0.01
     
 
 while True:
-    #Lists holding filtered values over time
     total = 0
     #int / time_diff = samples
     for i in range(0, int(3 / time_diff)):
@@ -112,11 +121,16 @@ while True:
         total += (last_x - temp_x) + (last_y - temp_y)
         print(total)
 
+        #NOTE:
+        #Could impliment total check here
+        #if total / iterations < val
+
     #CHANGEME:
     #Needs testing to determine apropriate value!
     if total > 10:
         #Will be updated to BCM output
         print("Rep!")
+        #setPin(23, True)
     
         
         
