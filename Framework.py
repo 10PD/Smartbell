@@ -9,6 +9,7 @@
 #Imported libraries
 import json
 import datetime, time
+import requests
 
 #Descriptor object handling JSON data
 class jsonDesc(object):
@@ -77,4 +78,6 @@ class jsonOutput(object):
 
 #Creates output object for server    
 z = jsonOutput()
+
+
 
