@@ -5,37 +5,10 @@ from nimblenet.neuralnet import NeuralNet
 from nimblenet.preprocessing import construct_preprocessor, standarize
 from nimblenet.data_structures import Instance
 from nimblenet.tools import print_test
-from random import randint
 
 
-#Example Training set
-#dataset             = [ Instance( [0,0,1], [0] ), Instance( [0,1,1], [0] ), Instance( [0,2,1], [0] ) ]
-
-#Dataset will take the form:
-#X / Y values = N-sized timeslice
-N = 20
-
-#Generates example data of N samples
-#X is 'slowly moving upwards'
-#Y is 'slightly moving side-to-side' for random variance
-def example_gen(start, N):
-    last_x = list()
-    last_y = list()
-    for i in range(start, N):
-        rdm = randint(-3,3)
-        last_x.append(i+rdm)
-        last_y.append(rdm)
-    return [last_x, last_y]
-
-dataset = list()
-data = example_gen(0,N)
-for i in range(0,len(data[0])):
-    dataset.append ( Instance ( [data[0][i],data[1][i]], [0] ) )
-
-#X = [0, 1, 2, 3, 4, 5, 6]
-#Y = [-1, 0, -1, 1, 2, 5]
-
-
+# Training set
+dataset             = [ Instance( [0,0], [0] ), Instance( [1,0], [1] ), Instance( [0,1], [1] ), Instance( [1,1], [1] ) ]
 
 preprocess          = construct_preprocessor( dataset, [standarize] ) 
 training_data       = preprocess( dataset )
@@ -77,7 +50,7 @@ RMSprop(
                                 
         batch_size              = 0,        # 1 := no batch learning, 0 := entire trainingset as a batch, anything else := batch size
         print_rate              = 1000,     # print error status every `print_rate` epoch.
-        learning_rate           = 0.2,      # learning rate
+        learning_rate           = 0.3,      # learning rate
         momentum_factor         = 0.9,      # momentum
         input_layer_dropout     = 0.0,      # dropout fraction of the input layer
         hidden_layer_dropout    = 0.0,      # dropout fraction in all hidden layers
@@ -126,7 +99,6 @@ print_test( network, training_data, cost_function )
 """
 Prediction Example
 """
-prediction_set = dataset
+prediction_set = [ Instance([0,1]), Instance([1,0]) ]
 prediction_set = preprocess( prediction_set )
-print "me "
 print network.predict( prediction_set ) # produce the output signal
