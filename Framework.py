@@ -79,5 +79,7 @@ class jsonOutput(object):
 #Creates output object for server    
 z = jsonOutput()
 
-
+#HTTP Post request
+head = {'Content-Type': 'application/json'}
+r = requests.post('http://46.101.3.244:8080/api/workoutData', data = json.dumps(z.data), headers=head)
 

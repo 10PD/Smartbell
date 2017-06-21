@@ -12,30 +12,42 @@ from random import randint
 #dataset             = [ Instance( [0,0,0], [0,0] ), Instance( [1,1,1], [0,1] ), Instance( [2,2,2], [1,0] ) ]
 
 #Generates example data of N samples
-#X is 'slowly moving upwards'
+#X is 'slowly moving up/down-wards'
 #Y is 'slightly moving side-to-side' for random variance
-def example_gen(start, end):
+def example_gen(start, end, iterable=1):
     last_x = list()
     last_y = list()
-    for i in range(start, end):
+    for i in range(start, end, iterable):
         rdm = randint(-3,3)
         last_x.append(i+rdm)
         last_y.append(rdm)
     return [last_x, last_y]
 
 
-#Generates a dataset by slicing example data
-def timeslice(data, N):
-    dataset = list()
+def getSlices(data, label=None, dataset=[]):
     for i in range(len(data[0])-N-1):
-        dataset.append ( Instance ( [ data[0][i:N+i], data[1][i:N+i] ], [ data[0][N+i], data[1][N+i] ] ) )
+        build = []
+        for j in range(N):
+            if (j >= N/2):
+                build.append(data[0][i+j])
+            else:
+                build.append(data[1][i+j])
+        if label:
+            dataset.append( Instance (build, label))
+        else:
+            dataset.append( Instance (build) )
     return dataset
-
+        
+                                    
 #Dataset will take the form:
 #X / Y values = N-sized timeslice
+global N
 N = 20
-data = example_gen(0,100)
-dataset = timeslice(data, N)
+#Examples generated for up and down
+up = example_gen(0,100)
+down = example_gen(100,0,-1)
+dataset = getSlices(up, [1])
+dataset = getSlices(down, [0], dataset)
 
 
 
@@ -47,8 +59,8 @@ test_data           = preprocess( dataset )
 cost_function       = cross_entropy_cost
 settings            = {
     # Required settings
-    "n_inputs"              : 3,       # Number of network input signals
-    "layers"                : [  (6, sigmoid_function), (2, sigmoid_function) ],
+    "n_inputs"              : N,       # Number of network input signals
+    "layers"                : [  (20, sigmoid_function), (1, sigmoid_function) ],
                                         # [ (number_of_neurons, activation_function) ]
                                         # The last pair in the list dictate the number of output signals
     
@@ -79,8 +91,8 @@ RMSprop(
                                 
         batch_size              = 0,        # 1 := no batch learning, 0 := entire trainingset as a batch, anything else := batch size
         print_rate              = 1000,     # print error status every `print_rate` epoch.
-        learning_rate           = 0.2,      # learning rate
-        momentum_factor         = 0.9,      # momentum
+        learning_rate           = 0.1,      # learning rate
+        momentum_factor         = 0.8,      # momentum
         input_layer_dropout     = 0.0,      # dropout fraction of the input layer
         hidden_layer_dropout    = 0.0,      # dropout fraction in all hidden layers
         save_trained_network    = False     # Whether to write the trained weights to disk
@@ -94,7 +106,8 @@ print_test( network, training_data, cost_function )
 """
 Prediction Example
 """
-prediction_set = dataset
+prediction_vals = example_gen(0,100)
+prediction_set = getSlices(prediction_vals, N)
 prediction_set = preprocess( prediction_set )
 print " "
 print network.predict( prediction_set ) # produce the output signal
