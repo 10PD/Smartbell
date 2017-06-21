@@ -9,31 +9,33 @@ from random import randint
 
 
 #Example Training set
-#dataset             = [ Instance( [0,0,1], [0] ), Instance( [0,1,1], [0] ), Instance( [0,2,1], [0] ) ]
-
-#Dataset will take the form:
-#X / Y values = N-sized timeslice
-N = 20
+#dataset             = [ Instance( [0,0,0], [0,0] ), Instance( [1,1,1], [0,1] ), Instance( [2,2,2], [1,0] ) ]
 
 #Generates example data of N samples
 #X is 'slowly moving upwards'
 #Y is 'slightly moving side-to-side' for random variance
-def example_gen(start, N):
+def example_gen(start, end):
     last_x = list()
     last_y = list()
-    for i in range(start, N):
+    for i in range(start, end):
         rdm = randint(-3,3)
         last_x.append(i+rdm)
         last_y.append(rdm)
     return [last_x, last_y]
 
-dataset = list()
-data = example_gen(0,N)
-for i in range(0,len(data[0])):
-    dataset.append ( Instance ( [data[0][i],data[1][i]], [0] ) )
 
-#X = [0, 1, 2, 3, 4, 5, 6]
-#Y = [-1, 0, -1, 1, 2, 5]
+#Generates a dataset by slicing example data
+def timeslice(data, N):
+    dataset = list()
+    for i in range(len(data[0])-N-1):
+        dataset.append ( Instance ( [ data[0][i:N+i], data[1][i:N+i] ], [ data[0][N+i], data[1][N+i] ] ) )
+    return dataset
+
+#Dataset will take the form:
+#X / Y values = N-sized timeslice
+N = 20
+data = example_gen(0,100)
+dataset = timeslice(data, N)
 
 
 
@@ -45,8 +47,8 @@ test_data           = preprocess( dataset )
 cost_function       = cross_entropy_cost
 settings            = {
     # Required settings
-    "n_inputs"              : 2,       # Number of network input signals
-    "layers"                : [  (3, sigmoid_function), (1, sigmoid_function) ],
+    "n_inputs"              : 3,       # Number of network input signals
+    "layers"                : [  (6, sigmoid_function), (2, sigmoid_function) ],
                                         # [ (number_of_neurons, activation_function) ]
                                         # The last pair in the list dictate the number of output signals
     
@@ -85,40 +87,6 @@ RMSprop(
     )
 
 
-## Train the network using Scaled Conjugate Gradient
-#scaled_conjugate_gradient(
-#        network,
-#        training_data,                  # specify the training set
-#        test_data,                      # specify the test set
-#        cost_function,                  # specify the cost function to calculate error
-#        
-#        # optional parameters
-#        print_rate           = 1000,    # print error status every `print_rate` epoch.
-#        ERROR_LIMIT          = 1e-4,    # define an acceptable error limit 
-#        save_trained_network = False    # Whether to write the trained weights to disk
-#    )
-
-
-## Train the network using resilient backpropagation
-#resilient_backpropagation(
-#        network,
-#        training_data,                  # specify the training set
-#        test_data,                      # specify the test set
-#        cost_function,                  # specify the cost function to calculate error
-#        ERROR_LIMIT          = 1e-3,    # define an acceptable error limit
-#        #max_iterations      = (),      # continues until the error limit is reach if this argument is skipped
-#        
-#        # optional parameters
-#        print_rate           = 1000,    # print error status every `print_rate` epoch.
-#        weight_step_max      = 50., 
-#        weight_step_min      = 0., 
-#        start_step           = 0.5, 
-#        learn_max            = 1.2, 
-#        learn_min            = 0.5,
-#        save_trained_network = False    # Whether to write the trained weights to disk
-#    )
-
-
 # Print a network test
 print_test( network, training_data, cost_function )
 
@@ -128,5 +96,5 @@ Prediction Example
 """
 prediction_set = dataset
 prediction_set = preprocess( prediction_set )
-print "me "
+print " "
 print network.predict( prediction_set ) # produce the output signal

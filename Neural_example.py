@@ -99,6 +99,6 @@ print_test( network, training_data, cost_function )
 """
 Prediction Example
 """
-prediction_set = [ Instance([0,1]), Instance([1,0]) ]
+prediction_set = [ Instance([0.5,0]), Instance([1,0]) ]
 prediction_set = preprocess( prediction_set )
 print network.predict( prediction_set ) # produce the output signal
