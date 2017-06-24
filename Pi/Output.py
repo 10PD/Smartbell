@@ -96,7 +96,7 @@ try:
         last_x = K * (last_x + gyro_x_delta) + (K1 * rotation_x)
         last_y = K * (last_y + gyro_y_delta) + (K1 * rotation_y)
         #outVar = ( "time:{0:.4f} rot_x:{1:.2f} gyro_x:{2:.2f} last_x:{3:.2f} rot_y:{4:.2f} gyro_x:{5:.2f} last_y:{6:.2f} \n".format( time.time() - now, (rotation_x), (gyro_total_x), (last_x), (rotation_y), (gyro_total_y), (last_y)) )
-        outVar = last_x + ", " + last_y
+        outVar = str(last_x) + "," + str(last_y)
         print(outVar)
         output.append(outVar)
 #Breaks on Control+C

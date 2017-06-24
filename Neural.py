@@ -5,11 +5,13 @@ from nimblenet.neuralnet import NeuralNet
 from nimblenet.preprocessing import construct_preprocessor, standarize
 from nimblenet.data_structures import Instance
 from nimblenet.tools import print_test
-from random import randint
+import random
 
 
 #Example Training set
 #dataset             = [ Instance( [0,0,0], [0,0] ), Instance( [1,1,1], [0,1] ), Instance( [2,2,2], [1,0] ) ]
+
+
 
 #Generates example data of N samples
 #X is 'slowly moving up/down-wards'
@@ -18,38 +20,48 @@ def example_gen(start, end, iterable=1):
     last_x = list()
     last_y = list()
     for i in range(start, end, iterable):
-        rdm = randint(-3,3)
+        rdm = random.randint(-3,3)
         last_x.append(i+rdm)
         last_y.append(rdm)
+    #Returns 2D array, 0=X, 1=Y
     return [last_x, last_y]
 
 
-def getSlices(data, label=None, dataset=[]):
-    for i in range(len(data[0])-N-1):
-        build = []
-        for j in range(N):
-            if (j >= N/2):
-                build.append(data[0][i+j])
-            else:
-                build.append(data[1][i+j])
-        if label:
-            dataset.append( Instance (build, label))
-        else:
-            dataset.append( Instance (build) )
+#Generates q-size dataset of slices
+#Slices taken from j-size data
+def datasetBuilder(q, j, dataset=[]):
+    for i in range(q):
+        up = example_gen(0,j)
+        down = example_gen(j,0,-1)
+        dataset = getSlices(up, [0,0], dataset)
+        dataset = getSlices(down, [1,0], dataset)
+
     return dataset
-        
-                                    
+
+
+#Slices example data
+#X1, Y1, X2, Y2
+def getSlices(data, label=None, dataset=[]):
+    for i in range(0,len(data[0])-N-2, 2):
+        build = []
+        for j in range(N/2):
+            #build = current x,y
+            build.append(data[0][i+j])    
+            build.append(data[1][i+j])  
+        if label:
+            dataset.insert(random.randrange(len(dataset)+1), Instance (build, label))
+        else:
+            dataset.insert(random.randrange(len(dataset)+1), Instance (build))
+
+    return dataset
+
+
 #Dataset will take the form:
-#X / Y values = N-sized timeslice
+#X + Y values = N-sized timeslice
 global N
-N = 20
-#Examples generated for up and down
-up = example_gen(0,100)
-down = example_gen(100,0,-1)
-dataset = getSlices(up, [1])
-dataset = getSlices(down, [0], dataset)
+N = 24
 
-
+dataset = datasetBuilder(10, 100)
 
 preprocess          = construct_preprocessor( dataset, [standarize] ) 
 training_data       = preprocess( dataset )
@@ -60,7 +72,7 @@ cost_function       = cross_entropy_cost
 settings            = {
     # Required settings
     "n_inputs"              : N,       # Number of network input signals
-    "layers"                : [  (20, sigmoid_function), (1, sigmoid_function) ],
+    "layers"                : [  (20, sigmoid_function), (2, sigmoid_function) ],
                                         # [ (number_of_neurons, activation_function) ]
                                         # The last pair in the list dictate the number of output signals
     
@@ -86,8 +98,8 @@ RMSprop(
         test_data,                          # specify the test set
         cost_function,                      # specify the cost function to calculate error
         
-        ERROR_LIMIT             = 1e-2,     # define an acceptable error limit 
-        #max_iterations         = 100,      # continues until the error limit is reach if this argument is skipped
+        ERROR_LIMIT             = 1e-3,     # define an acceptable error limit 
+        #max_iterations         = 10000,      # continues until the error limit is reach if this argument is skipped
                                 
         batch_size              = 0,        # 1 := no batch learning, 0 := entire trainingset as a batch, anything else := batch size
         print_rate              = 1000,     # print error status every `print_rate` epoch.
@@ -100,14 +112,14 @@ RMSprop(
 
 
 # Print a network test
-print_test( network, training_data, cost_function )
+#print_test( network, training_data, cost_function )
 
 
 """
 Prediction Example
 """
 prediction_vals = example_gen(0,100)
-prediction_set = getSlices(prediction_vals, N)
+prediction_set = getSlices(prediction_vals)
 prediction_set = preprocess( prediction_set )
 print " "
 print network.predict( prediction_set ) # produce the output signal
