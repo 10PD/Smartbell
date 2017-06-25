@@ -8,11 +8,6 @@ from nimblenet.tools import print_test
 import random
 
 
-#Example Training set
-#dataset             = [ Instance( [0,0,0], [0,0] ), Instance( [1,1,1], [0,1] ), Instance( [2,2,2], [1,0] ) ]
-
-
-
 #Generates example data of N samples
 #X is 'slowly moving up/down-wards'
 #Y is 'slightly moving side-to-side' for random variance
@@ -29,7 +24,7 @@ def example_gen(start, end, iterable=1):
 
 #Generates q-size dataset of slices
 #Slices taken from j-size data
-def datasetBuilder(q, j, dataset=[]):
+def example_datasetBuilder(q, j, dataset=[]):
     for i in range(q):
         up = example_gen(0,j)
         down = example_gen(j,0,-1)
@@ -39,7 +34,16 @@ def datasetBuilder(q, j, dataset=[]):
     return dataset
 
 
-#Slices example data
+#Retrieves data from file
+#Returns formatted into 2D array
+def getFileData(fname):
+    with open(fname) as f:
+        content = f.readlines() 
+    a, b = zip(*(s.strip('\n').split(",") for s in content))
+    #Typecasts touples to lists for return
+    return [list(a), list(b)]
+  
+#Slices input data
 #X1, Y1, X2, Y2
 def getSlices(data, label=None, dataset=[]):
     for i in range(0,len(data[0])-N-2, 2):
@@ -59,9 +63,9 @@ def getSlices(data, label=None, dataset=[]):
 #Dataset will take the form:
 #X + Y values = N-sized timeslice
 global N
-N = 24
+N = 20
 
-dataset = datasetBuilder(10, 100)
+dataset = example_datasetBuilder(10, 100)
 
 preprocess          = construct_preprocessor( dataset, [standarize] ) 
 training_data       = preprocess( dataset )
@@ -98,7 +102,7 @@ RMSprop(
         test_data,                          # specify the test set
         cost_function,                      # specify the cost function to calculate error
         
-        ERROR_LIMIT             = 1e-3,     # define an acceptable error limit 
+        ERROR_LIMIT             = 1e-2,     # define an acceptable error limit 
         #max_iterations         = 10000,      # continues until the error limit is reach if this argument is skipped
                                 
         batch_size              = 0,        # 1 := no batch learning, 0 := entire trainingset as a batch, anything else := batch size
