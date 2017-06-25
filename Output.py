@@ -4,7 +4,7 @@
 import smbus
 import math
 import time
-
+import os
 # Power management registers
 power_mgmt_1 = 0x6b
 power_mgmt_2 = 0x6c
