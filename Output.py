@@ -109,7 +109,7 @@ except KeyboardInterrupt:
     outputFileName = outputFileName.replace("#", str(outputVersion))
     for x in output:
         with open(outputFileName, "a") as myfile:
-            myfile.write(x)
+            myfile.write(x + '\n')
 
 
 
