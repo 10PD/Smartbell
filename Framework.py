@@ -55,31 +55,11 @@ class jsonOutput(object):
         #Remember! JS takes miliseconds, Python gives seconds.
         return int(time.mktime(d.timetuple())) * 1000 #Sec*1000 = MilSec
 
-    #Gets unique ID of RaspPi from its CPU ID
-    #WARNING: Attempts file handling. If jsonOutput object is heavily used, REFACTOR THIS.
-    def getSerial():
-        #Extract serial from cpuinfo file
-        cpuserial = "0000000000000000"
-        try:
-            f = open('/proc/cpuinfo','r')
-            for line in f:
-                if line[0:6]=='Serial':
-                    cpuserial = line[10:26]
-            f.close()
-        except:
-            cpuserial = "ERROR000000000"
-        #return cpuserial
-        return 'serialID' #Placeholder until I'm on a Pi
-
     #Horrible concatenation of the JSON object
     #TBI will be updated with features when possible
-    formattedData = '[{"dumbbell_id":"' + getSerial() + '","user_id":"' + 'TBI' + '",\"date\":' + str(getDate()) + ',\"workout\":\"' + 'TBI' + '\",\"reps\":' + '404' + ',\"form\":' + '404' + '}]'
+    formattedData = '[{"dumbbell_id":"01","user_id":"' + 'TBI' + '",\"date\":' + str(getDate()) + ',\"workout\":\"' + 'TBI' + '\",\"reps\":' + '404' + ',\"form\":' + '404' + '}]'
     data = jsonDesc(formattedData)
 
 #Creates output object for server    
 z = jsonOutput()
-
-#HTTP Post request
-head = {'Content-Type': 'application/json'}
-r = requests.post('http://46.101.3.244:8080/api/workoutData', data = json.dumps(z.data), headers=head)
 

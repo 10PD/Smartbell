@@ -21,10 +21,5 @@ def datasetBuilder(fstart, fstop, label, dataset=[]):
 
 
     
-
-#d = datasetBuilder(1, 10, [1,0])
-#print(d)
-output = ["1,2","3,4","5,6"]
-for x in output:
-    with open("test.txt", "a") as myfile:
-        myfile.write(x + '\n')
+d = datasetBuilder(1, 10, [1,0])
+print(d)
