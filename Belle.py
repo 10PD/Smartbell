@@ -106,8 +106,9 @@ GPIO.setmode(GPIO.BCM)
 pin = 23
 GPIO.setup(pin, GPIO.OUT)
 
-#
+#Streaming variables
 output = list()
+reps = 0
 
 ##-------Data streaming---------
 try:
@@ -129,11 +130,20 @@ try:
         rotation_x = get_x_rotation(accel_scaled_x, accel_scaled_y, accel_scaled_z)
         rotation_y = get_y_rotation(accel_scaled_x, accel_scaled_y, accel_scaled_z)
 
+        #temp vars for rep calc
+        temp_x = last_x
+        temp_y = last_y
+
         last_x = K * (last_x + gyro_x_delta) + (K1 * rotation_x)
         last_y = K * (last_y + gyro_y_delta) + (K1 * rotation_y)
 
 
-        #Gonna have to make slices in here        
+        #Rep calculation
+        total += (last_x - temp_x) + (last_y - temp_y)
+        
+        #Gonna have to make slices in here
+        #Wait for N-size slice first
+        #Then take N-size iterating
         outVar = str(last_x) + "," + str(last_y)
         print(outVar)
         output.append(outVar)
@@ -142,6 +152,8 @@ try:
         GPIO.output(pin, True)
         time.sleep(1)
         GPIO.output(pin, False)
+        #Incriments rep counter
+        reps += 1
         
          
 #Breaks on Control+C
@@ -149,32 +161,23 @@ try:
 except KeyboardInterrupt:
     ##-----------Framework----------------
     #Outputs to new JSON post each time
-    output
-    '[{"dumbbell_id":"serialID","user_id":"TBI","date":"' + getDate() + ,'""workout":"TBI","reps":404,"form":404}]'
+    jsonString = '[{"dumbbell_id":"serialID","user_id":"TBI","date":' + getDate() + ,',"workout":"TBI","reps":' + reps + ',"form":404}]'
     #HTTP Post request on z
-    z = frameJson.jsonOutput()
     head = {'Content-Type': 'application/json'}
+    
     r = requests.post('http://46.101.3.244:8080/api/workoutData', data = json.dumps(z.data), headers=head)
-
-
-
-
 
 
 ##-------------------BELLE--------------------
 
 ## Loads Belle's beautiful brain
-network           = NeuralNet.load_network_from_file( "Brains/Belle_1.pkl" )
+network = NeuralNet.load_network_from_file( "Brains/Belle_1.pkl" )
 
 # Print a network test
 #print_test( network, training_data, cost_function )
 
-
-"""
-Prediction Example
-"""
+##----------Predictions------------
 prediction_vals = getFileData("Data/output_2.txt")
-prediction_set = getSlices(prediction_vals)
+#prediction_set = getSlices(prediction_vals)
 prediction_set = preprocess( prediction_set )
-print " "
 print network.predict( prediction_set ) # produce the output signal
