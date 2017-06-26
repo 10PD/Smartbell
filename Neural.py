@@ -6,6 +6,7 @@ from nimblenet.preprocessing import construct_preprocessor, standarize
 from nimblenet.data_structures import Instance
 from nimblenet.tools import print_test
 import random
+import os
 
 
 #Generates example data of N samples
@@ -28,7 +29,7 @@ def example_datasetBuilder(q, j, dataset=[]):
     for i in range(q):
         up = example_gen(0,j)
         down = example_gen(j,0,-1)
-        dataset = getSlices(up, [0,0], dataset)
+        dataset = getSlices(up, [0,1], dataset)
         dataset = getSlices(down, [1,0], dataset)
 
     return dataset
@@ -42,10 +43,11 @@ def getFileData(fname):
     a, b = zip(*(s.strip('\n').split(",") for s in content))
     #Typecasts touples to lists for return
     return [list(a), list(b)]
+
   
 #Slices input data
 #X1, Y1, X2, Y2
-def getSlices(data, label=None, dataset=[]):
+def getSlices(data, label, dataset=[]):
     for i in range(0,len(data[0])-N-2, 2):
         build = []
         for j in range(N/2):
@@ -54,10 +56,23 @@ def getSlices(data, label=None, dataset=[]):
             build.append(data[1][i+j])  
         if label:
             dataset.insert(random.randrange(len(dataset)+1), Instance (build, label))
+            #dataset.append ([build, label])
         else:
             dataset.insert(random.randrange(len(dataset)+1), Instance (build))
+            #dataset.append ([build])
 
     return dataset
+
+def datasetBuilder(fstart, fstop, label, dataset=[]):
+    baseName = "Data/output_#.txt"
+    i = fstart
+    while os.path.isfile(baseName.replace("#", str(i))):
+        data = getFileData(baseName.replace("#", str(i)))
+        dataset = getSlices(data,label,dataset)
+        if i == fstop:
+            i = "End"
+        else:
+            i += 1
 
 
 #Dataset will take the form:
@@ -65,7 +80,9 @@ def getSlices(data, label=None, dataset=[]):
 global N
 N = 20
 
-dataset = example_datasetBuilder(10, 100)
+dataset = datasetBuilder(0, 10, [1,0])
+
+
 
 preprocess          = construct_preprocessor( dataset, [standarize] ) 
 training_data       = preprocess( dataset )

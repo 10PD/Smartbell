@@ -1,12 +1,30 @@
+import os
+
 def getFileData(fname):
     with open(fname) as f:
         content = f.readlines() 
     a, b = zip(*(s.strip('\n').split(",") for s in content))
     #Typecasts touples to lists for return
     return [list(a), list(b)]
+
+def datasetBuilder(fstart, fstop, label, dataset=[]):
+    baseName = "Data/output_#.txt"
+    i = fstart
+    while os.path.isfile(baseName.replace("#", str(i))):
+        print(i)
+        data = getFileData(baseName.replace("#", str(i)))
+        dataset = getSlices(data,label,dataset)
+        if i == fstop:
+            i = "End"
+        else:
+            i += 1
+
+
     
-    
-filen = "Data/example.txt"
-a = getFileData(filen)
-print(a[0])
-print(a[1])
+
+#d = datasetBuilder(1, 10, [1,0])
+#print(d)
+output = ["1,2","3,4","5,6"]
+for x in output:
+    with open("test.txt", "a") as myfile:
+        myfile.write(x + '\n')
