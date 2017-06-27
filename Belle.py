@@ -118,6 +118,7 @@ GPIO.setup(pin, GPIO.OUT)
 nSlice = list()
 reps = 0
 N = 20
+preprocess = construct_preprocessor( dataset, [standarize] ) 
 
 ##-------Data streaming---------
 try:
@@ -200,9 +201,3 @@ except KeyboardInterrupt:
 ##    
 ##    r = requests.post('http://46.101.3.244:8080/api/workoutData', data = json.dumps(z.data), headers=head)
 
-
-
-#prediction_vals = getFileData("Data/output_2.txt")
-#prediction_set = getSlices(prediction_vals)
-#prediction_set = preprocess( prediction_set )
- # produce the output signal
