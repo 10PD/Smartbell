@@ -157,7 +157,7 @@ try:
             #Prints a prediction!
             #HIGH LOW = Bicep Curl!
             #LOW HIGH = Trash!
-            print network.predict( nSlice )
+            print network.predict( Instance (nSlice) )
 
  
             ##----------Rep Calculation--------
