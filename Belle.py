@@ -153,11 +153,12 @@ try:
 
             ##----------Predictions------------
             #Throws nSlice to Belle
-            #prediction_set = preprocess( nSlice )
+            preprocess  = construct_preprocessor( [Instance(nSlice)], [standarize] ) 
+            prediction_set = preprocess( [Instance(nSlice)] )
             #Prints a prediction!
             #HIGH LOW = Bicep Curl!
             #LOW HIGH = Trash!
-            print network.predict( Instance (nSlice) )
+            print network.predict( [Instance (nSlice)] )
 
  
             ##----------Rep Calculation--------
