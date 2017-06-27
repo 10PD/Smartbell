@@ -158,6 +158,7 @@ try:
             #Prints a prediction!
             #HIGH LOW = Bicep Curl!
             #LOW HIGH = Trash!
+            print(str(nSlice[0]) + ", " + str(nSlice[1]))
             print network.predict( [Instance (nSlice)] )
 
  
@@ -178,11 +179,12 @@ try:
             #Value needs testing
             if total < 10:            
                 #Sets vibration on then off
-                GPIO.output(pin, True)
+                #GPIO.output(pin, True)
                 #System sleeps - Curl not rated whilst stationary
-                time.sleep(1)
-                GPIO.output(pin, False)
+                #time.sleep(1)
+                #GPIO.output(pin, False)
                 #Incriments rep counter
+                print(reps)
                 reps += 1
             
          
