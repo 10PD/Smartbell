@@ -34,7 +34,6 @@ network = NeuralNet.load_network_from_file( "Brains/Belle_1.pkl" )
 #print_test( network, training_data, cost_function )
 
 
-
 ##------------------LISA--------------------
 # Power management registers
 
@@ -116,8 +115,7 @@ pin = 23
 GPIO.setup(pin, GPIO.OUT)
 
 #Variables used whilst data streaming
-x_list = list()
-y_list = list()
+nSlice = list()
 reps = 0
 N = 20
 
@@ -144,24 +142,14 @@ try:
         
         last_x = K * (last_x + gyro_x_delta) + (K1 * rotation_x)
         last_y = K * (last_y + gyro_y_delta) + (K1 * rotation_y)
-        
-        x_list.append(last_x)
-        y_list.append(last_y)
 
-        if len(x_list) == N:
-            
-            #Rep calc vars
-            temp_x = x_list[0]
-            temp_y = y_list[0]
-            #Slicing
-            nSlice = []
-            for i in range(0,N-1):
-                nSlice.append(x_list[i])
-                nSlice.append(y_list[i])
-                #Rep calculation
-                total += (x_list[i] - temp_x) + (y_list[i] - temp_y)
+        #[X1,Y1,X2,Y2]
+        nSlice.append(last_x)
+        nSlice.append(last_y)
 
-            
+        #When N values have been recorded
+        if len(nSlice) == N:
+
             ##----------Predictions------------
             #Throws nSlice to Belle
             prediction_set = preprocess( nSlice )
@@ -169,10 +157,21 @@ try:
             #HIGH LOW = Bicep Curl!
             #LOW HIGH = Trash!
             print network.predict( prediction_set )
-            
-                
-            del x_list[0]
-            del y_list[0]
+
+ 
+            ##----------Rep Calculation--------
+            temp_x = nSlice[0]
+            temp_y = nSlice[1]
+            total = 0
+
+            for i in range(len(nSlice)):
+                if i % 2 == 0:
+                    total += (nSlice[i] - temp_x)    
+                else:
+                    total += (nSlice[i] - temp_y)
+
+            #Pops X1,Y1 for sliding window
+            nSlice = nSlice[2:]
 
             #Value needs testing
             if total < 10:            
@@ -189,6 +188,7 @@ try:
 #REFACTOR FOR LIVE USE
 except KeyboardInterrupt:
         ##-------------Testing----------------
+        print("Rep count:" + str(reps))
         
 
     
@@ -204,5 +204,5 @@ except KeyboardInterrupt:
 
 #prediction_vals = getFileData("Data/output_2.txt")
 #prediction_set = getSlices(prediction_vals)
-prediction_set = preprocess( prediction_set )
+#prediction_set = preprocess( prediction_set )
  # produce the output signal
