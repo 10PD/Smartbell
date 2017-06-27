@@ -4,6 +4,8 @@
 #BELLE: Neural Network classifier
 #LISA: Interface and complex filter of MPU6050 chip
 #Framework: Posts data to server upon program completion
+#Rep calculation
+#Vibration motor controls
 
 #Library imports
 from nimblenet.activation_functions import sigmoid_function
@@ -22,6 +24,16 @@ import RPi.GPIO as GPIO
 import requests
 import json
 import datetime
+
+##-------------------BELLE--------------------
+
+## Loads Belle's beautiful brain
+network = NeuralNet.load_network_from_file( "Brains/Belle_1.pkl" )
+
+# Print a network test
+#print_test( network, training_data, cost_function )
+
+
 
 ##------------------LISA--------------------
 # Power management registers
@@ -89,9 +101,6 @@ gyro_offset_y = gyro_scaled_y
 gyro_total_x = (last_x) - gyro_offset_x
 gyro_total_y = (last_y) - gyro_offset_y
 
-print ("{0:.4f} {1:.2f} {2:.2f} {3:.2f} {4:.2f} {5:.2f} {6:.2f}").format( time.time() - now, (last_x), gyro_total_x, (last_x), (last_y), gyro_total_y, (last_y))
-
-
 
 #Returns current time in JS format
 def getDate():
@@ -106,9 +115,11 @@ GPIO.setmode(GPIO.BCM)
 pin = 23
 GPIO.setup(pin, GPIO.OUT)
 
-#Streaming variables
-output = list()
+#Variables used whilst data streaming
+x_list = list()
+y_list = list()
 reps = 0
+N = 20
 
 ##-------Data streaming---------
 try:
@@ -130,54 +141,68 @@ try:
         rotation_x = get_x_rotation(accel_scaled_x, accel_scaled_y, accel_scaled_z)
         rotation_y = get_y_rotation(accel_scaled_x, accel_scaled_y, accel_scaled_z)
 
-        #temp vars for rep calc
-        temp_x = last_x
-        temp_y = last_y
-
+        
         last_x = K * (last_x + gyro_x_delta) + (K1 * rotation_x)
         last_y = K * (last_y + gyro_y_delta) + (K1 * rotation_y)
+        
+        x_list.append(last_x)
+        y_list.append(last_y)
 
+        if len(x_list) == N:
+            
+            #Rep calc vars
+            temp_x = x_list[0]
+            temp_y = y_list[0]
+            #Slicing
+            nSlice = []
+            for i in range(0,N-1):
+                nSlice.append(x_list[i])
+                nSlice.append(y_list[i])
+                #Rep calculation
+                total += (x_list[i] - temp_x) + (y_list[i] - temp_y)
 
-        #Rep calculation
-        total += (last_x - temp_x) + (last_y - temp_y)
-        
-        #Gonna have to make slices in here
-        #Wait for N-size slice first
-        #Then take N-size iterating
-        outVar = str(last_x) + "," + str(last_y)
-        print(outVar)
-        output.append(outVar)
-        
-        #Sets vibration on then off
-        GPIO.output(pin, True)
-        time.sleep(1)
-        GPIO.output(pin, False)
-        #Incriments rep counter
-        reps += 1
-        
+            
+            ##----------Predictions------------
+            #Throws nSlice to Belle
+            prediction_set = preprocess( nSlice )
+            #Prints a prediction!
+            #HIGH LOW = Bicep Curl!
+            #LOW HIGH = Trash!
+            print network.predict( prediction_set )
+            
+                
+            del x_list[0]
+            del y_list[0]
+
+            #Value needs testing
+            if total < 10:            
+                #Sets vibration on then off
+                GPIO.output(pin, True)
+                #System sleeps - Curl not rated whilst stationary
+                time.sleep(1)
+                GPIO.output(pin, False)
+                #Incriments rep counter
+                reps += 1
+            
          
 #Breaks on Control+C
 #REFACTOR FOR LIVE USE
 except KeyboardInterrupt:
-    ##-----------Framework----------------
-    #Outputs to new JSON post each time
-    jsonString = '[{"dumbbell_id":"serialID","user_id":"TBI","date":' + getDate() + ,',"workout":"TBI","reps":' + reps + ',"form":404}]'
-    #HTTP Post request on z
-    head = {'Content-Type': 'application/json'}
+        ##-------------Testing----------------
+        
+
     
-    r = requests.post('http://46.101.3.244:8080/api/workoutData', data = json.dumps(z.data), headers=head)
+##    ##-----------Framework----------------
+##    #Outputs to new JSON post each time
+##    jsonString = '[{"dumbbell_id":"serialID","user_id":"TBI","date":' + getDate() + ,',"workout":"bicepcurl","reps":' + reps + ',"form":404}]'
+##    #HTTP Post request on z
+##    head = {'Content-Type': 'application/json'}
+##    
+##    r = requests.post('http://46.101.3.244:8080/api/workoutData', data = json.dumps(z.data), headers=head)
 
 
-##-------------------BELLE--------------------
 
-## Loads Belle's beautiful brain
-network = NeuralNet.load_network_from_file( "Brains/Belle_1.pkl" )
-
-# Print a network test
-#print_test( network, training_data, cost_function )
-
-##----------Predictions------------
-prediction_vals = getFileData("Data/output_2.txt")
+#prediction_vals = getFileData("Data/output_2.txt")
 #prediction_set = getSlices(prediction_vals)
 prediction_set = preprocess( prediction_set )
-print network.predict( prediction_set ) # produce the output signal
+ # produce the output signal
