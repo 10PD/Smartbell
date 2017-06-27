@@ -158,7 +158,7 @@ try:
             #Prints a prediction!
             #HIGH LOW = Bicep Curl!
             #LOW HIGH = Trash!
-            print(str(nSlice[0]) + ", " + str(nSlice[1]))
+            #print(str(nSlice[0]) + ", " + str(nSlice[1]))
             print network.predict( [Instance (nSlice)] )
 
  
@@ -184,7 +184,6 @@ try:
                 #time.sleep(1)
                 #GPIO.output(pin, False)
                 #Incriments rep counter
-                print(reps)
                 reps += 1
             
          
