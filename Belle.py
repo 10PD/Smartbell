@@ -118,7 +118,7 @@ GPIO.setup(pin, GPIO.OUT)
 nSlice = list()
 reps = 0
 N = 20
-preprocess = construct_preprocessor( dataset, [standarize] ) 
+#preprocess = construct_preprocessor( dataset, [standarize] ) 
 
 ##-------Data streaming---------
 try:
@@ -153,11 +153,11 @@ try:
 
             ##----------Predictions------------
             #Throws nSlice to Belle
-            prediction_set = preprocess( nSlice )
+            #prediction_set = preprocess( nSlice )
             #Prints a prediction!
             #HIGH LOW = Bicep Curl!
             #LOW HIGH = Trash!
-            print network.predict( prediction_set )
+            print network.predict( nSlice )
 
  
             ##----------Rep Calculation--------
