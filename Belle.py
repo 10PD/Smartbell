@@ -24,11 +24,11 @@ import RPi.GPIO as GPIO
 import requests
 import json
 import datetime
-
+import numpy as np
 ##-------------------BELLE--------------------
 
 ## Loads Belle's beautiful brain
-network = NeuralNet.load_network_from_file( "Brains/Belle_1.pkl" )
+network = NeuralNet.load_network_from_file( "Brains/Belle_2.pkl" )
 
 # Print a network test
 #print_test( network, training_data, cost_function )
@@ -118,12 +118,13 @@ GPIO.setup(pin, GPIO.OUT)
 nSlice = list()
 reps = 0
 N = 20
-#preprocess = construct_preprocessor( dataset, [standarize] ) 
+counter = 0
 
 ##-------Data streaming---------
 try:
     while True:
-        time.sleep(time_diff - 0.005) 
+        time.sleep(time_diff - 0.005)
+        counter += 1
     
         (gyro_scaled_x, gyro_scaled_y, gyro_scaled_z, accel_scaled_x, accel_scaled_y, accel_scaled_z) = read_all()
 
@@ -153,15 +154,17 @@ try:
 
             ##----------Predictions------------
             #Throws nSlice to Belle
-            preprocess  = construct_preprocessor( [Instance(nSlice)], [standarize] ) 
-            prediction_set = preprocess( [Instance(nSlice)] )
+            inData = [Instance (nSlice)]
+            preprocess  = construct_preprocessor( inData, [standarize] ) 
+            prediction_set = preprocess( inData )
             #Prints a prediction!
             #HIGH LOW = Bicep Curl!
             #LOW HIGH = Trash!
             #print(str(nSlice[0]) + ", " + str(nSlice[1]))
-            print network.predict( [Instance (nSlice)] )
-
- 
+            #print network.predict( inData )
+            neuralOut = np.floor(np.log10(np.abs(inData)))
+            xAvg += neuralOut[0]
+            yAvg += neuralOut[1]
             ##----------Rep Calculation--------
             temp_x = nSlice[0]
             temp_y = nSlice[1]
@@ -173,11 +176,10 @@ try:
                 else:
                     total += (nSlice[i] - temp_y)
 
-            #Pops X1,Y1 for sliding window
-            nSlice = nSlice[2:]
 
-            #Value needs testing
-            if total < 10:            
+            #-------Rep activation----------
+            if total < 5:
+                print(rep)
                 #Sets vibration on then off
                 #GPIO.output(pin, True)
                 #System sleeps - Curl not rated whilst stationary
@@ -185,13 +187,19 @@ try:
                 #GPIO.output(pin, False)
                 #Incriments rep counter
                 reps += 1
-            
+
+            #Pops X1,Y1 for sliding window
+            nSlice = nSlice[2:]
          
 #Breaks on Control+C
 #REFACTOR FOR LIVE USE
 except KeyboardInterrupt:
         ##-------------Testing----------------
-        print("Rep count:" + str(reps))
+        xAvg = xAvg / counter
+        yAvg = yAvg / counter
+        print("\nRep count:" + str(reps))
+        print("X: " + str(xAvg))
+        print("Y: " + str(yAvg))
         
 
     

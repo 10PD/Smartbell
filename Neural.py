@@ -7,7 +7,7 @@ from nimblenet.data_structures import Instance
 from nimblenet.tools import print_test
 import random
 import os
-
+import numpy as np
 
 #Generates example data of N samples
 #X is 'slowly moving up/down-wards'
@@ -63,17 +63,11 @@ def getSlices(data, label=None, dataset=[]):
 
     return dataset
 
-def datasetBuilder(fstart, fstop, label, dataset=[]):
-    baseName = "Data/output_#.txt"
-    i = fstart
-    while os.path.isfile(baseName.replace("#", str(i))):
-        data = getFileData(baseName.replace("#", str(i)))
-        dataset = getSlices(data,label,dataset)
-        if i == fstop:
-            i = "End"
-        else:
-            i += 1
-            
+#Builds dataset from filepath
+def datasetBuilder(filepath, label, dataset=[]):
+    for fn in os.listdir(filepath):
+        data = getFileData(filepath + fn)
+        dataset = getSlices(data,label,dataset)            
     return dataset
 
 
@@ -82,8 +76,8 @@ def datasetBuilder(fstart, fstop, label, dataset=[]):
 global N
 N = 20
 
-dataset = datasetBuilder(2, 11, [1,0])
-dataset = datasetBuilder(12, 14, [0,1], dataset)
+dataset = datasetBuilder( "Data/Bicep/",[1,0])
+dataset = datasetBuilder("Data/Noise/",[0,1], dataset)
 
 
 
@@ -140,8 +134,12 @@ RMSprop(
 """
 Prediction Example
 """
-prediction_vals = getFileData("Data/output_2.txt")
+prediction_vals = getFileData("Data/Noise/output_4.txt")
 prediction_set = getSlices(prediction_vals)
 prediction_set = preprocess( prediction_set )
 print " "
-print network.predict( prediction_set ) # produce the output signal
+out = network.predict( prediction_set )# produce the output signal
+print(out)
+out = np.floor(np.log10(np.abs(out)))
+for x in out:
+    print(x[0])
