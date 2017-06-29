@@ -28,7 +28,7 @@ import numpy as np
 ##-------------------BELLE--------------------
 
 ## Loads Belle's beautiful brain
-network = NeuralNet.load_network_from_file( "Brains/Belle_4.pkl" )
+network = NeuralNet.load_network_from_file( "Brains/Belle_5.pkl" )
 
 # Print a network test
 #print_test( network, training_data, cost_function )
@@ -116,7 +116,7 @@ GPIO.setup(pin, GPIO.OUT)
 
 #Variables used whilst data streaming
 nSlice = list()
-N = 26
+N = 20
 reps, counter, xAvg, yAvg, xExp, yExp, testCount = (0,) * 7
 
 ##-------Data streaming---------
