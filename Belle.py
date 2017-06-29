@@ -185,6 +185,7 @@ try:
                 #GPIO.output(pin, False)
                 #Incriments rep counter
                 reps += 1
+		print reps
             
          
 #Breaks on Control+C
