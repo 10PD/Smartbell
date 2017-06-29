@@ -27,7 +27,11 @@ import numpy as np
 ##-------------------BELLE--------------------
 
 ## Loads Belle's beautiful brain
+<<<<<<< HEAD
 network = NeuralNet.load_network_from_file( "Brains/Belle_3.pkl" )
+=======
+network = NeuralNet.load_network_from_file( "Brains/Belle_4.pkl" )
+>>>>>>> refs/remotes/origin/master
 
 # Print a network test
 #print_test( network, training_data, cost_function )
@@ -115,12 +119,17 @@ GPIO.setup(pin, GPIO.OUT)
 
 #Variables used whilst data streaming
 nSlice = list()
+<<<<<<< HEAD
 reps = 0
 N = 26
 counter = 0
 xAvg = 0
 yAvg = 0
 testCount = 0
+=======
+N = 26
+reps, counter, xAvg, yAvg, xExp, yExp, testCount = (0,) * 7
+>>>>>>> refs/remotes/origin/master
 
 ##-------Data streaming---------
 try:
@@ -171,6 +180,8 @@ try:
                 testCount += 1
             xAvg += neuralOut[0][0]
             yAvg += neuralOut[0][1]
+            xExp += exponents[0][0]
+            yExp += exponents[0][1]
             ##----------Rep Calculation--------
             temp_x = nSlice[0]
             temp_y = nSlice[1]
@@ -203,9 +214,13 @@ except KeyboardInterrupt:
         ##-------------Testing----------------
         xAvg = xAvg / counter
         yAvg = yAvg / counter
+        xExp = xExp / counter
+        yExp = yExp / counter
         print("\nRep count:" + str(reps))
         print("X: " + str(xAvg))
         print("Y: " + str(yAvg))
+        print("Xexp: " + str(xExp))
+        print("Yexp: " + str(yExp))
         print("testCount: " + str(testCount))
         
 
