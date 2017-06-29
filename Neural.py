@@ -74,7 +74,7 @@ def datasetBuilder(filepath, label, dataset=[]):
 #Dataset will take the form:
 #X + Y values = N-sized timeslice
 global N
-N = 20
+N = 26
 
 dataset = datasetBuilder( "Data/Bicep/",[1,0])
 dataset = datasetBuilder("Data/Noise/",[0,1], dataset)
@@ -90,7 +90,7 @@ cost_function       = cross_entropy_cost
 settings            = {
     # Required settings
     "n_inputs"              : N,       # Number of network input signals
-    "layers"                : [  (40, sigmoid_function), (2, sigmoid_function) ],
+    "layers"                : [  (50, sigmoid_function), (2, sigmoid_function) ],
                                         # [ (number_of_neurons, activation_function) ]
                                         # The last pair in the list dictate the number of output signals
     
@@ -117,7 +117,7 @@ RMSprop(
         cost_function,                      # specify the cost function to calculate error
         
         ERROR_LIMIT             = 1e-2,     # define an acceptable error limit 
-        max_iterations         = 60000,      # continues until the error limit is reach if this argument is skipped
+        max_iterations         = 75000,      # continues until the error limit is reach if this argument is skipped
                                 
         batch_size              = 0,        # 1 := no batch learning, 0 := entire trainingset as a batch, anything else := batch size
         print_rate              = 1000,     # print error status every `print_rate` epoch.
@@ -134,7 +134,7 @@ RMSprop(
 """
 Prediction Example
 """
-prediction_vals = getFileData("Data/Noise/output_4.txt")
+prediction_vals = getFileData("Data/Bicep/output_4.txt")
 prediction_set = getSlices(prediction_vals)
 prediction_set = preprocess( prediction_set )
 print " "

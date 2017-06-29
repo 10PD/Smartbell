@@ -166,10 +166,11 @@ try:
             neuralOut = network.predict( inData )
             print(neuralOut)
             exponents = np.floor(np.log10(np.abs(neuralOut)))
+            #If [1,x] detected
             if exponents[0][0] < -2:
                 testCount += 1
-            xAvg += exponents[0][0]
-            yAvg += exponents[0][1]
+            xAvg += neuralOut[0][0]
+            yAvg += neuralOut[0][1]
             ##----------Rep Calculation--------
             temp_x = nSlice[0]
             temp_y = nSlice[1]
@@ -184,7 +185,7 @@ try:
 
             #-------Rep activation----------
             if total < 100:
-                print(reps)
+                #print(reps)
                 #Sets vibration on then off
                 #GPIO.output(pin, True)
                 #System sleeps - Curl not rated whilst stationary
