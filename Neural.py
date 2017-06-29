@@ -143,3 +143,4 @@ print(out)
 out = np.floor(np.log10(np.abs(out)))
 for x in out:
     print(x[0])
+    print(x[1])

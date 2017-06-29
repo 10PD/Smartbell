@@ -120,6 +120,7 @@ N = 20
 counter = 0
 xAvg = 0
 yAvg = 0
+testCount = 0
 
 ##-------Data streaming---------
 try:
@@ -165,6 +166,8 @@ try:
             neuralOut = network.predict( inData )
             print(neuralOut)
             exponents = np.floor(np.log10(np.abs(neuralOut)))
+            if exponents[0][0] < 2:
+                testCount += 1
             xAvg += exponents[0][0]
             yAvg += exponents[0][1]
             ##----------Rep Calculation--------
@@ -180,7 +183,7 @@ try:
 
 
             #-------Rep activation----------
-            if total < 5:
+            if total < 100:
                 print(reps)
                 #Sets vibration on then off
                 #GPIO.output(pin, True)
@@ -202,6 +205,7 @@ except KeyboardInterrupt:
         print("\nRep count:" + str(reps))
         print("X: " + str(xAvg))
         print("Y: " + str(yAvg))
+        print("testCount: " + str(testCount))
         
 
     
