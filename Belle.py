@@ -160,10 +160,11 @@ try:
             #HIGH LOW = Bicep Curl!
             #LOW HIGH = Trash!
             #print(str(nSlice[0]) + ", " + str(nSlice[1]))
-            #print network.predict( inData )
-            neuralOut = np.floor(np.log10(np.abs(inData)))
-            xAvg += neuralOut[0]
-            yAvg += neuralOut[1]
+            neuralOut = network.predict( inData )
+            print(neuralOut)
+            exponents = np.floor(np.log10(np.abs(neuralOut)))
+            xAvg += exponents[0]
+            yAvg += exponents[1]
             ##----------Rep Calculation--------
             temp_x = nSlice[0]
             temp_y = nSlice[1]
