@@ -1,4 +1,3 @@
-#!/usr/bin/python
 #Smartbell project in culmination!
 #Featuring:
 #BELLE: Neural Network classifier
