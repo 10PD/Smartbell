@@ -102,7 +102,7 @@ try:
 #Breaks on Control+C
 except KeyboardInterrupt:
     #Outputs to new file each time
-    outputFileName = "Data/Bicep/output_#.txt"
+    outputFileName = "Data/Noise/output_#.txt"
     outputVersion = 1
     while os.path.isfile(outputFileName.replace("#", str(outputVersion))):
         outputVersion += 1
