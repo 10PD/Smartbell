@@ -166,7 +166,7 @@ try:
             neuralOut = network.predict( inData )
             print(neuralOut)
             exponents = np.floor(np.log10(np.abs(neuralOut)))
-            if exponents[0][0] < 2:
+            if exponents[0][0] < -2:
                 testCount += 1
             xAvg += exponents[0][0]
             yAvg += exponents[0][1]
