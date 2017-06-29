@@ -118,6 +118,8 @@ nSlice = list()
 reps = 0
 N = 20
 counter = 0
+xAvg = 0
+yAvg = 0
 
 ##-------Data streaming---------
 try:
@@ -163,8 +165,8 @@ try:
             neuralOut = network.predict( inData )
             print(neuralOut)
             exponents = np.floor(np.log10(np.abs(neuralOut)))
-            xAvg += exponents[0]
-            yAvg += exponents[1]
+            xAvg += exponents[0][0]
+            yAvg += exponents[0][1]
             ##----------Rep Calculation--------
             temp_x = nSlice[0]
             temp_y = nSlice[1]
@@ -179,7 +181,7 @@ try:
 
             #-------Rep activation----------
             if total < 5:
-                print(rep)
+                print(reps)
                 #Sets vibration on then off
                 #GPIO.output(pin, True)
                 #System sleeps - Curl not rated whilst stationary
