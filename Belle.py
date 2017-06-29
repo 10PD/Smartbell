@@ -28,7 +28,11 @@ import numpy as np
 ##-------------------BELLE--------------------
 
 ## Loads Belle's beautiful brain
+<<<<<<< HEAD
+network = NeuralNet.load_network_from_file( "Brains/Belle_3.pkl" )
+=======
 network = NeuralNet.load_network_from_file( "Brains/Belle_4.pkl" )
+>>>>>>> refs/remotes/origin/master
 
 # Print a network test
 #print_test( network, training_data, cost_function )
@@ -116,8 +120,17 @@ GPIO.setup(pin, GPIO.OUT)
 
 #Variables used whilst data streaming
 nSlice = list()
+<<<<<<< HEAD
+reps = 0
+N = 26
+counter = 0
+xAvg = 0
+yAvg = 0
+testCount = 0
+=======
 N = 26
 reps, counter, xAvg, yAvg, xExp, yExp, testCount = (0,) * 7
+>>>>>>> refs/remotes/origin/master
 
 ##-------Data streaming---------
 try:
