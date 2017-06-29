@@ -74,7 +74,7 @@ def datasetBuilder(filepath, label, dataset=[]):
 #Dataset will take the form:
 #X + Y values = N-sized timeslice
 global N
-N = 26
+N = 20
 
 dataset = datasetBuilder( "Data/Bicep/",[1,0])
 dataset = datasetBuilder("Data/Noise/",[0,1], dataset)
@@ -90,7 +90,7 @@ cost_function       = cross_entropy_cost
 settings            = {
     # Required settings
     "n_inputs"              : N,       # Number of network input signals
-    "layers"                : [  (50, sigmoid_function), (2, sigmoid_function) ],
+    "layers"                : [  (56, sigmoid_function), (2, sigmoid_function) ],
                                         # [ (number_of_neurons, activation_function) ]
                                         # The last pair in the list dictate the number of output signals
     
