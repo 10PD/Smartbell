@@ -120,7 +120,10 @@ N = 20
 #reps, counter, xAvg, yAvg, xExp, yExp, testCount = (0,) * 7
 reps = 0
 counter = 0
+xCount = 0
+yChain = 0
 yExp = 0
+biFlag = False
 
 ##-------Data streaming---------
 try:
@@ -166,16 +169,7 @@ try:
             neuralOut = network.predict( inData )
             print(neuralOut)
             exponents = np.floor(np.log10(np.abs(neuralOut)))
-            ##----------Bicep Accuracy---------
-            #If [HIGH, LOW] detected
-            if neuralOut[0][0] > neuralOut[0][1]:
-                xCount += 1
-                yExp += exponents[0][1]      
-##            xAvg += neuralOut[0][0]
-##            yAvg += neuralOut[0][1]
-##            xExp += exponents[0][0]
-##            
-            ##----------Rep Calculation--------
+            ##----------Total Movement Calculation--------
             temp_x = nSlice[0]
             temp_y = nSlice[1]
             total = 0
@@ -187,18 +181,31 @@ try:
                     total += (nSlice[i] - temp_y)
 
 
-            #-------Rep activation----------
-            if total < 100:
-                #print(reps)
-                #Sets vibration on then off
-                #GPIO.output(pin, True)
-                #System sleeps - Curl not rated whilst stationary
-                #time.sleep(1)
-                #GPIO.output(pin, False)
-                #Incriments rep counter
-                reps += 1
+            ##----------Bicep Accuracy---------
+            #If [HIGH, LOW] detected
+            if neuralOut[0][0] > neuralOut[0][1]:
+                xCount += 1
+                yExp += exponents[0][1]
 
-            #Pops X1,Y1 for sliding window
+            ##---------Rep calculations-----------
+                xChain += 1
+                yChain = 0
+                if xChain > 20:
+                    biFlag = True
+            #If [LOW, HIGH] detected
+            else:
+                yChain += 1
+                xChain = 0
+                if (yChain > 5) and biFlag and (total < 100) :
+                    reps += 1
+                #Sets vibration on then off
+                GPIO.output(pin, True)
+                #Impliment time counter
+                #Disable reps for x time
+                GPIO.output(pin, False)
+
+
+            ##--Pops X1,Y1 for sliding window--
             nSlice = nSlice[2:]
          
 #Breaks on Control+C
