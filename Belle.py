@@ -28,7 +28,7 @@ import numpy as np
 ##-------------------BELLE--------------------
 
 ## Loads Belle's beautiful brain
-network = NeuralNet.load_network_from_file( "Brains/Belle_5.pkl" )
+network = NeuralNet.load_network_from_file( "Belle_5.pkl" )
 
 # Print a network test
 #print_test( network, training_data, cost_function )
@@ -124,12 +124,18 @@ xCount = 0
 yChain = 0
 yExp = 0
 biFlag = False
+timedCounter = 0
 
 ##-------Data streaming---------
 try:
     while True:
+        #Counters
         time.sleep(time_diff - 0.005)
         counter += 1
+        #Sleeps the vibration after X time
+        if counter == timedCounter:
+            GPIO.output(pin, False)
+            
     
         (gyro_scaled_x, gyro_scaled_y, gyro_scaled_z, accel_scaled_x, accel_scaled_y, accel_scaled_z) = read_all()
 
@@ -196,13 +202,14 @@ try:
             else:
                 yChain += 1
                 xChain = 0
-                if (yChain > 5) and biFlag and (total < 100) :
+                if (yChain > 5) and biFlag and (total < 100) and timedCounter < counter:
                     reps += 1
-                #Sets vibration on then off
-                GPIO.output(pin, True)
-                #Impliment time counter
-                #Disable reps for x time
-                GPIO.output(pin, False)
+                    #Sets vibration on
+                    GPIO.output(pin, True)
+                    #Sleep time
+                    timedCounter = counter + 20
+                    #Disable reps for x time
+                
 
 
             ##--Pops X1,Y1 for sliding window--
@@ -213,7 +220,7 @@ try:
 except KeyboardInterrupt:
         accuracy = (xCount / counter) * 100
         yTotal = yExp / xCount
-        print("Bicep curl detected for", accuracy, "\% of the runtime. \n"
+        print("Bicep curl detected for", accuracy, "\% of the runtime. \n")
         #DO BETTER MATHS HERE!
         print("Curl was", yTotal*(-2.5), "\% precise.")
 
