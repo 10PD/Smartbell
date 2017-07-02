@@ -123,8 +123,12 @@ counter = 0
 xCount = 0
 yChain = 0
 yExp = 0
+<<<<<<< HEAD
 biFlag = False
 timedCounter = 0
+=======
+xCount = 1
+>>>>>>> 2053c9948ddf8da844f88c9aa0e2612831089dd8
 
 ##-------Data streaming---------
 try:
@@ -175,7 +179,21 @@ try:
             neuralOut = network.predict( inData )
             print(neuralOut)
             exponents = np.floor(np.log10(np.abs(neuralOut)))
+<<<<<<< HEAD
             ##----------Total Movement Calculation--------
+=======
+            ##----------Bicep Accuracy---------
+            #If [HIGH, LOW] detected
+            if neuralOut[0][0] > neuralOut[0][1]:
+                xCount += 1
+		print xCount
+                yExp += exponents[0][1]      
+##            xAvg += neuralOut[0][0]
+##            yAvg += neuralOut[0][1]
+##            xExp += exponents[0][0]
+##            
+            ##----------Rep Calculation--------
+>>>>>>> 2053c9948ddf8da844f88c9aa0e2612831089dd8
             temp_x = nSlice[0]
             temp_y = nSlice[1]
             total = 0
@@ -220,10 +238,16 @@ try:
 except KeyboardInterrupt:
         accuracy = (xCount / counter) * 100
         yTotal = yExp / xCount
+<<<<<<< HEAD
         print("Bicep curl detected for", accuracy, "\% of the runtime. \n")
         #DO BETTER MATHS HERE!
         print("Curl was", yTotal*(-2.5), "\% precise. \n")
         print reps
+=======
+        print "Bicep curl detected for" + str(accuracy) + " of the runtime. \n"
+        #DO BETTER MATHS HERE!
+        print "Curl was " + str(abs(yTotal) * 2.5) + " precise."
+>>>>>>> 2053c9948ddf8da844f88c9aa0e2612831089dd8
 
     
         ##-------------Testing----------------

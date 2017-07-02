@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+    <head>
+            <title>The Mothership</title>
+    </head>
+    <body>
+            <script src="/socket.io/socket.io.js"></script>
+            <script>
+                var socket = io();
+                function testFunc(){
+                    socket.emit('testCommand', document.getElementById("command").value);
+                }
+            </script>
+            <h1>Welcome to the Mothership!</h1>
+            <input type="text" id="command">
+            <button onclick="testFunc()">Hello World</button>
+    </body>
+</html>
