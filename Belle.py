@@ -121,6 +121,7 @@ N = 20
 reps = 0
 counter = 0
 yExp = 0
+xCount = 1
 
 ##-------Data streaming---------
 try:
@@ -170,6 +171,7 @@ try:
             #If [HIGH, LOW] detected
             if neuralOut[0][0] > neuralOut[0][1]:
                 xCount += 1
+		print xCount
                 yExp += exponents[0][1]      
 ##            xAvg += neuralOut[0][0]
 ##            yAvg += neuralOut[0][1]
@@ -206,9 +208,9 @@ try:
 except KeyboardInterrupt:
         accuracy = (xCount / counter) * 100
         yTotal = yExp / xCount
-        print("Bicep curl detected for", accuracy, "\% of the runtime. \n"
+        print "Bicep curl detected for" + str(accuracy) + " of the runtime. \n"
         #DO BETTER MATHS HERE!
-        print("Curl was", yTotal*(-2.5), "\% precise.")
+        print "Curl was " + str(abs(yTotal) * 2.5) + " precise."
 
     
         ##-------------Testing----------------
