@@ -126,7 +126,7 @@ yChain = 0
 yExp = 0
 biFlag = False
 vibCounter = 0
-
+timedCounter = 0
 ##-------Data streaming---------
 try:
     while True:
