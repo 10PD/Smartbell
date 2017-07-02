@@ -117,7 +117,10 @@ GPIO.setup(pin, GPIO.OUT)
 #Variables used whilst data streaming
 nSlice = list()
 N = 20
-reps, counter, xAvg, yAvg, xExp, yExp, testCount = (0,) * 7
+#reps, counter, xAvg, yAvg, xExp, yExp, testCount = (0,) * 7
+reps = 0
+counter = 0
+yExp = 0
 
 ##-------Data streaming---------
 try:
@@ -163,13 +166,15 @@ try:
             neuralOut = network.predict( inData )
             print(neuralOut)
             exponents = np.floor(np.log10(np.abs(neuralOut)))
-            #If [1,x] detected
-            if exponents[0][0] < -2:
-                testCount += 1
-            xAvg += neuralOut[0][0]
-            yAvg += neuralOut[0][1]
-            xExp += exponents[0][0]
-            yExp += exponents[0][1]
+            ##----------Bicep Accuracy---------
+            #If [HIGH, LOW] detected
+            if neuralOut[0][0] > neuralOut[0][1]:
+                xCount += 1
+                yExp += exponents[0][1]      
+##            xAvg += neuralOut[0][0]
+##            yAvg += neuralOut[0][1]
+##            xExp += exponents[0][0]
+##            
             ##----------Rep Calculation--------
             temp_x = nSlice[0]
             temp_y = nSlice[1]
@@ -199,17 +204,23 @@ try:
 #Breaks on Control+C
 #REFACTOR FOR LIVE USE
 except KeyboardInterrupt:
+        accuracy = (xCount / counter) * 100
+        yTotal = yExp / xCount
+        print("Bicep curl detected for", accuracy, "\% of the runtime. \n"
+        #DO BETTER MATHS HERE!
+        print("Curl was", yTotal*(-2.5), "\% precise.")
+
+    
         ##-------------Testing----------------
-        xAvg = xAvg / counter
-        yAvg = yAvg / counter
-        xExp = xExp / counter
-        yExp = yExp / counter
-        print("\nRep count:" + str(reps))
-        print("X: " + str(xAvg))
-        print("Y: " + str(yAvg))
-        print("Xexp: " + str(xExp))
-        print("Yexp: " + str(yExp))
-        print("testCount: " + str(testCount))
+##        xAvg = xAvg / counter
+##        yAvg = yAvg / counter
+##        xExp = xExp / counter
+##        print("\nRep count:" + str(reps))
+##        print("X: " + str(xAvg))
+##        print("Y: " + str(yAvg))
+##        print("Xexp: " + str(xExp))
+##        print("Yexp: " + str(yExp))
+##        print("testCount: " + str(testCount))
         
 
     
