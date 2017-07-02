@@ -28,7 +28,7 @@ import numpy as np
 ##-------------------BELLE--------------------
 
 ## Loads Belle's beautiful brain
-network = NeuralNet.load_network_from_file( "Brains/Belle_5.pkl" )
+network = NeuralNet.load_network_from_file( "Belle_5.pkl" )
 
 # Print a network test
 #print_test( network, training_data, cost_function )
@@ -120,13 +120,22 @@ N = 20
 #reps, counter, xAvg, yAvg, xExp, yExp, testCount = (0,) * 7
 reps = 0
 counter = 0
+xCount = 0
+yChain = 0
 yExp = 0
+biFlag = False
+timedCounter = 0
 
 ##-------Data streaming---------
 try:
     while True:
+        #Counters
         time.sleep(time_diff - 0.005)
         counter += 1
+        #Sleeps the vibration after X time
+        if counter == timedCounter:
+            GPIO.output(pin, False)
+            
     
         (gyro_scaled_x, gyro_scaled_y, gyro_scaled_z, accel_scaled_x, accel_scaled_y, accel_scaled_z) = read_all()
 
@@ -166,16 +175,7 @@ try:
             neuralOut = network.predict( inData )
             print(neuralOut)
             exponents = np.floor(np.log10(np.abs(neuralOut)))
-            ##----------Bicep Accuracy---------
-            #If [HIGH, LOW] detected
-            if neuralOut[0][0] > neuralOut[0][1]:
-                xCount += 1
-                yExp += exponents[0][1]      
-##            xAvg += neuralOut[0][0]
-##            yAvg += neuralOut[0][1]
-##            xExp += exponents[0][0]
-##            
-            ##----------Rep Calculation--------
+            ##----------Total Movement Calculation--------
             temp_x = nSlice[0]
             temp_y = nSlice[1]
             total = 0
@@ -187,18 +187,32 @@ try:
                     total += (nSlice[i] - temp_y)
 
 
-            #-------Rep activation----------
-            if total < 100:
-                #print(reps)
-                #Sets vibration on then off
-                #GPIO.output(pin, True)
-                #System sleeps - Curl not rated whilst stationary
-                #time.sleep(1)
-                #GPIO.output(pin, False)
-                #Incriments rep counter
-                reps += 1
+            ##----------Bicep Accuracy---------
+            #If [HIGH, LOW] detected
+            if neuralOut[0][0] > neuralOut[0][1]:
+                xCount += 1
+                yExp += exponents[0][1]
 
-            #Pops X1,Y1 for sliding window
+            ##---------Rep calculations-----------
+                xChain += 1
+                yChain = 0
+                if xChain > 20:
+                    biFlag = True
+            #If [LOW, HIGH] detected
+            else:
+                yChain += 1
+                xChain = 0
+                if (yChain > 5) and biFlag and (total < 100) and timedCounter < counter:
+                    reps += 1
+                    #Sets vibration on
+                    GPIO.output(pin, True)
+                    #Sleep time
+                    timedCounter = counter + 20
+                    #Disable reps for x time
+                
+
+
+            ##--Pops X1,Y1 for sliding window--
             nSlice = nSlice[2:]
          
 #Breaks on Control+C
@@ -206,9 +220,10 @@ try:
 except KeyboardInterrupt:
         accuracy = (xCount / counter) * 100
         yTotal = yExp / xCount
-        print("Bicep curl detected for", accuracy, "\% of the runtime. \n"
+        print("Bicep curl detected for", accuracy, "\% of the runtime. \n")
         #DO BETTER MATHS HERE!
-        print("Curl was", yTotal*(-2.5), "\% precise.")
+        print("Curl was", yTotal*(-2.5), "\% precise. \n")
+        print reps
 
     
         ##-------------Testing----------------
