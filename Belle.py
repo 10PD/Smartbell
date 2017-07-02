@@ -120,11 +120,12 @@ N = 20
 #reps, counter, xAvg, yAvg, xExp, yExp, testCount = (0,) * 7
 reps = 0
 counter = 0
-xCount = 0
+xCount = 1
+xChain = 0
 yChain = 0
 yExp = 0
 biFlag = False
-timedCounter = 0
+vibCounter = 0
 
 ##-------Data streaming---------
 try:
@@ -133,7 +134,7 @@ try:
         time.sleep(time_diff - 0.005)
         counter += 1
         #Sleeps the vibration after X time
-        if counter == timedCounter:
+        if counter == vibCounter:
             GPIO.output(pin, False)
             
     
@@ -196,34 +197,51 @@ try:
             ##---------Rep calculations-----------
                 xChain += 1
                 yChain = 0
-                if xChain > 20:
+                if xChain > 30:
                     biFlag = True
             #If [LOW, HIGH] detected
             else:
                 yChain += 1
                 xChain = 0
-                if (yChain > 5) and biFlag and (total < 100) and timedCounter < counter:
+                if (yChain > 15) and biFlag and (total < 10) and timedCounter < counter:
                     reps += 1
                     #Sets vibration on
                     GPIO.output(pin, True)
-                    #Sleep time
-                    timedCounter = counter + 20
-                    #Disable reps for x time
-                
+                    #Vibration on timer
+                    vibCounter = counter + 50
+                    #Disable rep timer
+                    timedCounter = counter + 100
+                    biFlag = False
 
 
             ##--Pops X1,Y1 for sliding window--
             nSlice = nSlice[2:]
          
 #Breaks on Control+C
-#REFACTOR FOR LIVE USE
+#Will be sent via button on server
 except KeyboardInterrupt:
-        accuracy = (xCount / counter) * 100
-        yTotal = yExp / xCount
-        print("Bicep curl detected for", accuracy, "\% of the runtime. \n")
-        #DO BETTER MATHS HERE!
-        print("Curl was", yTotal*(-2.5), "\% precise. \n")
-        print reps
+    #Always disable vibration
+    GPIO.output(pin, False)
+    yTotal = yExp / xCount
+    #Working on maths here
+    baseRating = abs(yTotal*6.5)
+    #Formats down rating to be below 100 for a percentage
+    i = 0
+    while workoutRating > 100:
+        i += 1
+        workoutRating = baseRating * (1 - 0.05*i)
+        
+    print("Curl was " + str(workoutRating) + " out of 100. \n")
+    print reps
+
+    ##    ##-----------Framework----------------
+    #Outputs to new JSON post each time
+    jsonString = '[{"dumbbell_id":"Belle","user_id":"TBI","date":' + getDate() + ,',"workout":"bicepcurl","reps":' + str(reps) + ',"form":' + str(workoutRating)+ '}]'
+    #HTTP Post request on z
+    head = {'Content-Type': 'application/json'}
+    r = requests.post('http://46.101.3.244:8080/api/workoutData', data = json.dumps(z.data), headers=head)
+
+
 
     
         ##-------------Testing----------------
@@ -239,11 +257,3 @@ except KeyboardInterrupt:
         
 
     
-##    ##-----------Framework----------------
-##    #Outputs to new JSON post each time
-##    jsonString = '[{"dumbbell_id":"serialID","user_id":"TBI","date":' + getDate() + ,',"workout":"bicepcurl","reps":' + reps + ',"form":404}]'
-##    #HTTP Post request on z
-##    head = {'Content-Type': 'application/json'}
-##    
-##    r = requests.post('http://46.101.3.244:8080/api/workoutData', data = json.dumps(z.data), headers=head)
-
