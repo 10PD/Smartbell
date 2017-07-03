@@ -33,8 +33,7 @@ io.on('connection', function(socket){
         });
     })
     socket.on('killProcess', function(msg){
-	console.log(exec("ps -ef | grep '[B]'elle.py"));
-        var child2 = exec("kill -2 " + pid, function(err, stdout, stderr){
+        var child2 = exec("sudo kill -2 " + fakepid, function(err, stdout, stderr){
             console.log("stdout: " + stdout);
             if(err !== null){
                 console.log("stderr: " + stderr);
