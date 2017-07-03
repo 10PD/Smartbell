@@ -19,7 +19,7 @@ io.on('connection', function(socket){
                 console.log("exec err: " + err);
             }
         });
-        var child = exec("ps -ef | grep '[B]elle.py' | awk '{print $2}'", function(err, stdout, stderr){
+        var child = exec("ps -ef | grep '[p]ython2.7 Belle.py' | awk '{print $2}'", function(err, stdout, stderr){
             fakepid = stdout;
             console.log("PID = " + fakepid);
 	     

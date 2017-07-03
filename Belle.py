@@ -238,7 +238,7 @@ except KeyboardInterrupt:
 
     ##    ##-----------Framework----------------
     #Outputs to new JSON post each time
-    jsonString = '[{"dumbbell_id":"58dfca3f1d3448278f2fc68a","workout":"test1","reps":10,"form":20}]'
+   # jsonString = '[{"dumbbell_id":"58dfca3f1d3448278f2fc68a","workout":"test1","reps":10,"form":20}]'
     #HTTP Post request on z
     #head = {'Content-Type': 'application/json'}
     #r = requests.post('http://46.101.3.244:8080/api/workoutData', data = jsonString, headers=head)
@@ -246,4 +246,4 @@ except KeyboardInterrupt:
     #print r
 
 
-    os.system('python2.7 Server_test.py ' + json.dumps(jsonString))
+    os.system('python2.7 Server_test.py "58dfca3f1d3448278fc68a" "button" 10 20' )
