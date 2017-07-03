@@ -238,12 +238,12 @@ except KeyboardInterrupt:
 
     ##    ##-----------Framework----------------
     #Outputs to new JSON post each time
-    #jsonString = '[{"dumbbell_id":"Belle","user_id":"TBI","date":' + getDate() + ',"workout":"bicepcurl","reps":' + str(reps) + ',"form":' + str(workoutRating)+ '}]'
+    jsonString = '[{"dumbbell_id":"58dfca3f1d3448278f2fc68a","user_id":"Belle","date":' + getDate() + ',"workout":"bicepcurl","reps":' + str(reps) + ',"form":' + str(workoutRating)+ '}]'
     #HTTP Post request on z
-    #head = {'Content-Type': 'application/json'}
-   # r = requests.post('http://46.101.3.244:8080/api/workoutData', data = json.dumps(jsonString), headers=head)
+    head = {'Content-Type': 'application/json'}
+    r = requests.post('http://46.101.3.244:8080/api/workoutData', data = jsonString, headers=head)
     #r = requests.post('http://192.168.43.200:8080/api/workoutData', data = json.dumps(jsonString), headers=head)
-
+    print r
 
     
         ##-------------Testing----------------
