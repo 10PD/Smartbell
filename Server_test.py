@@ -9,3 +9,4 @@ head = {'Content-Type': 'application/json'}
 print jsonString
 r = requests.post('http://46.101.3.244:8080/api/workoutData', data = jsonString, headers=head)
 print(r)
+sys.exit(1)

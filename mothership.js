@@ -24,7 +24,7 @@ io.on('connection', function(socket){
             console.log("PID = " + fakepid);
 	     
 	    var holder = fakepid.split("\n");
-	    pid = holder[0];
+	    pid = holder[1];
 	    console.log("New pid: "  + pid);
             if(err !== null){
                 console.log("stderr: " + stderr);
@@ -33,7 +33,7 @@ io.on('connection', function(socket){
         });
     })
     socket.on('killProcess', function(msg){
-        var child2 = exec("sudo kill -2 " + fakepid, function(err, stdout, stderr){
+        var child2 = exec("sudo kill -2 " + pid, function(err, stdout, stderr){
             console.log("stdout: " + stdout);
             if(err !== null){
                 console.log("stderr: " + stderr);
