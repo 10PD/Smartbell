@@ -7,12 +7,15 @@
             <script src="/socket.io/socket.io.js"></script>
             <script>
                 var socket = io();
-                function testFunc(){
-                    socket.emit('testCommand', document.getElementById("command").value);
+                function startFunc(){
+                    socket.emit('startProcess');
+                }
+                function stopFunc(){
+                    socket.emit('killProcess');
                 }
             </script>
             <h1>Welcome to the Mothership!</h1>
-            <input type="text" id="command">
-            <button onclick="testFunc()">Hello World</button>
+            <button onclick="startFunc()">Start</button>
+            <button onclick="stopFunc()">Stop</button>
     </body>
 </html>

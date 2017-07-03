@@ -197,20 +197,20 @@ try:
             ##---------Rep calculations-----------
                 xChain += 1
                 yChain = 0
-                if xChain > 17:
+                if xChain > 20:
                     biFlag = True
             #If [LOW, HIGH] detected
             else:
                 yChain += 1
                 xChain = 0
-                if (yChain > 5) and biFlag and (total < 10) and timedCounter < counter:
+                if (yChain > 10) and biFlag and (total < 10) and timedCounter < counter:
                     reps += 1
                     #Sets vibration on
                     GPIO.output(pin, True)
                     #Vibration on timer
-                    vibCounter = counter + 30
+                    vibCounter = counter + 50
                     #Disable rep timer
-                    timedCounter = counter + 200
+                    timedCounter = counter + 100
                     biFlag = False
 
 
@@ -234,15 +234,14 @@ except KeyboardInterrupt:
         
     print("Curl was " + str(workoutRating) + " out of 100. \n")
     print "Reps:" , reps
-   
 
     ##    ##-----------Framework----------------
     #Outputs to new JSON post each time
-    #jsonString = '[{"dumbbell_id":"Belle","user_id":"TBI","date":' + getDate() + ',"workout":"bicepcurl","reps":' + str(reps) + ',"form":' + str(workoutRating)+ '}]'
+    jsonString = '[{"dumbbell_id":"Belle","user_id":"TBI","date":' + getDate() + ',"workout":"bicepcurl","reps":' + str(reps) + ',"form":' + str(workoutRating)+ '}]'
     #HTTP Post request on z
-    #head = {'Content-Type': 'application/json'}
-   # r = requests.post('http://46.101.3.244:8080/api/workoutData', data = json.dumps(jsonString), headers=head)
-    #r = requests.post('http://192.168.43.200:8080/api/workoutData', data = json.dumps(jsonString), headers=head)
+    head = {'Content-Type': 'application/json'}
+    r = requests.post('http://46.:8080/api/workoutData', data = json.dumps(jsonString), headers=head)
+
 
 
     
