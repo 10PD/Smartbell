@@ -9,6 +9,9 @@ Code for interacting with the hardware sensors and haptic feedback soldered to t
 # Belle:
 Neural network implementation. Interprets the data stream from the sensors and outputs appropriate feedback.
 
+# Data:
+Training data for Belle
+
 # mothership:
 Code to provide data to an online server, which in turn will relay it to the user's phone app.
 
