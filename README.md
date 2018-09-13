@@ -3,7 +3,7 @@ Odometry features from on-board sensors are streamed into an artificial neural n
 
 This repository contains all the code housed on-board the Smartbell:
 
-# Pi
+# Pi:
 Code for interacting with the hardware sensors and haptic feedback soldered to the Raspberry Pi.
 
 # Belle:
